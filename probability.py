@@ -1,4 +1,3 @@
-from csv import reader
 import pandas as pd
 
 
@@ -16,7 +15,7 @@ def open_csv(file_name):
     return new_df
 
 
-def get_winning_statistics(new_df,hits=1000, threshold=0.5, output='probability_to_win'):
+def get_winning_statistics(new_df, threshold=0.5, hits=1000, output='probability_to_win.csv'):
     # Total counts:
     new_df['Hits'] = 1
     total_statistics = new_df.groupby(['Task-symbol']).count()['Hits']
@@ -39,7 +38,7 @@ def get_winning_statistics(new_df,hits=1000, threshold=0.5, output='probability_
     # Output data
     result.to_csv(output)
 
+    # Print the results
+    print(result)
 
-def probability_to_win(file_name, hits, threshold, output):
-    df = open_csv(file_name)
-    get_winning_statistics(df, output, hits, threshold)
+
