@@ -2,68 +2,44 @@ from csv import reader
 import pandas as pd
 
 
-class Data:
+def open_csv(file_name):
+    # Reading the CSV:
+    df = pd.read_csv(file_name, index_col=False)
+    # Parsing the procId column:
+    proc_id = df['procId'].str.split('_', expand=True)
+    proc_id.columns = ['Symbol', 'Task-symbol', 'n', 'Date']
+    # Removing the procId column from original table:
+    df.drop(['procId'], axis=1, inplace=True)
+    # Joining parsed procId and original data
+    frames = [proc_id, df]
+    new_df = pd.concat(frames, axis=1)
+    return new_df
 
-    def __init__(self, file_name):
-        self.file_name = file_name
-        self.data = self.open_csv()
-        self.header = self.data.pop(0)
-        self.data = self.split_name()
 
-    def __repr__(self):
-        print(self.data)
+def get_winning_statistics(new_df,hits=1000, threshold=0.5, output='probability_to_win'):
+    # Total counts:
+    new_df['Hits'] = 1
+    total_statistics = new_df.groupby(['Task-symbol']).count()['Hits']
 
-    def __getitem__(self, item):
-        return self.data[item]
+    # Winning counts:
+    winning = pd.DataFrame(new_df[new_df['Balance'] > 0])
+    winning['Win'] = 1
+    winning_statistics = winning.groupby(['Task-symbol']).count()['Win']
 
-    def open_csv(self):
-        with open(self.file_name) as file:
-            csv_reader = reader(file)
-            return list(csv_reader)
+    # Joining total and wining statistics
+    statistics = [total_statistics, winning_statistics]
+    final_df = pd.concat(statistics, axis=1)
 
-    def split_name(self):
-        for d in self.data:
-            d[0] = d[0].split("_")
-        return self.data
+    # Calculating winning probability
+    final_df['Probability to win'] = final_df['Win'] / final_df['Hits']
 
-    def get_winning_statistics(self, output, hits, threshold):
-        symbol = []
-        date = []
-        value = []
+    # Slice selected data
+    result = final_df.loc[(final_df['Probability to win'] > threshold) & (final_df['Hits'] > hits)]
 
-        for d in self.data:
-            symbol.append(d[0][1])
-            date.append(d[0][3])
-            value.append(d[9])
+    # Output data
+    result.to_csv(output)
 
-        only_wins_symbol = []
-        only_wins_date = []
-        only_wins_value = []
 
-        for d in self.data:
-            if float(d[9]) > 0:
-                only_wins_symbol.append(d[0][1])
-                only_wins_date.append(d[0][3])
-                only_wins_value.append(d[9])
-
-        all_symbols = []
-        total_count = []
-        total_wins = []
-        prob_win = []
-
-        for s in symbol:
-            if s not in all_symbols:
-                x = symbol.count(s)
-                y = only_wins_symbol.count(s)
-                all_symbols.append(s)
-                total_count.append(x)
-                total_wins.append(y)
-                prob_win.append(y / x)
-
-        dataset = {'symbol': all_symbols, 'hits': total_count, 'wins': total_wins, 'probability to win': prob_win}
-
-        df = pd.DataFrame(dataset)
-        significant = df[df['hits'] > hits]
-
-        result = significant[significant['probability to win'] > threshold]
-        result.to_csv(path_or_buf=output, index=False)
+def probability_to_win(file_name, hits, threshold, output):
+    df = open_csv(file_name)
+    get_winning_statistics(df, output, hits, threshold)
