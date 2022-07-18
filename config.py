@@ -14,11 +14,11 @@ steps_forward = 5
 
 # Batch size:
 
-batch_size = 10
+batch_size = 32
 
 # Number of epochs:
 
-epochs = 100
+epochs = 200
 
 # Layer dense:
 
@@ -26,4 +26,4 @@ neurons = 150
 
 # Learning rate:
 
-learning_rate = 1e-8
+learning_rate = 1e-6

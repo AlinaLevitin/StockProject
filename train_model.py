@@ -1,7 +1,7 @@
 import os
 import methods
 import tensorflow as tf
-from DeepLearnig import train_data
+from DeepLearnig import Data
 import config
 
 
@@ -9,14 +9,13 @@ cwd = os.getcwd()
 
 csv = methods.open_csv(cwd, 'data.csv')
 
-data = train_data.Data(csv)
+data = Data.TrainingData(csv)
 
 print(data.x_train)
 
 model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(config.neurons, activation='elu', input_shape=(data.x_train.shape[1],)),
     tf.keras.layers.Dense(config.neurons, activation='tanh'),
-    tf.keras.layers.Dense(config.neurons, activation='relu'),
     tf.keras.layers.Dense(config.neurons, activation='relu'),
     tf.keras.layers.Dense(2, activation='softmax')
 ])
