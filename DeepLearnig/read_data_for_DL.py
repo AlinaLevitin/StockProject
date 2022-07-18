@@ -33,9 +33,9 @@ def up_or_down(future):
 def read_and_get_values(file, steps_back, steps_forward):
     data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
 
-    # Standardizing the data
-    data_raw['A'] = data_raw['A'] - data_raw['A'].iloc[0]
-    data_raw['B'] = data_raw['B'] - data_raw['B'].iloc[0]
+    # # Standardizing the data
+    # data_raw['A'] = data_raw['A'] - data_raw['A'].iloc[0]
+    # data_raw['B'] = data_raw['B'] - data_raw['B'].iloc[0]
 
     # New column with difference
     data_raw['A-B'] = data_raw['A'] - data_raw['B']

@@ -25,5 +25,3 @@ class Data:
         x_test = normalizer(x_test)
 
         return x_train, x_val, x_test, y_train, y_val, y_test
-
-
