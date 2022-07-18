@@ -19,10 +19,16 @@ class TrainingData(Data):
         super().__init__(data)
         self.x_train, self.x_val, self.x_test, self.y_train, self.y_val, self.y_test = self.split_data()
 
+    def __repr__(self):
+        train_num = self.x_train.shape[0]
+        val_num = self.x_val.shape[0]
+        test_num = self.x_test.shape[0]
+        return f"training data: {train_num}, validation data: {val_num}, test data: {test_num}"
+
     def split_data(self):
         x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.2,
                                                                             random_state=42)
-        x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.2,
+        x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.3,
                                                           random_state=42)
         x_train = scale_data(x_train)
         x_val = scale_data(x_val)

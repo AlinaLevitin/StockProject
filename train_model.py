@@ -4,14 +4,11 @@ import tensorflow as tf
 from DeepLearnig import Data
 import config
 
-
 cwd = os.getcwd()
 
 csv = methods.open_csv(cwd, 'data.csv')
 
 data = Data.TrainingData(csv)
-
-print(data.x_train)
 
 model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(config.neurons, activation='elu', input_shape=(data.x_train.shape[1],)),
@@ -30,12 +27,7 @@ model.fit(data.x_train, data.y_train,
           batch_size=config.batch_size
           )
 
-print('Testing the model:')
+print(data)
+print('###----------------\n Testing the model:')
 model.evaluate(data.x_test, data.y_test)
-
-
-
-
-
-
-
+print('###----------------')
