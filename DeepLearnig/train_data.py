@@ -3,6 +3,10 @@ import numpy as np
 import tensorflow as tf
 
 
+def scale(df):
+    return (df-df.min())/(df.max()-df.min())
+
+
 class Data:
 
     def __init__(self, data):
@@ -17,11 +21,11 @@ class Data:
         x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.2,
                                                           random_state=42)
 
-        normalizer = tf.keras.layers.Normalization(axis=-1)
-        normalizer.adapt(x)
+        # normalizer = tf.keras.layers.Normalization(axis=-1)
+        # normalizer.adapt(x)
 
-        x_train = normalizer(x_train)
-        x_val = normalizer(x_val)
-        x_test = normalizer(x_test)
+        x_train = scale(x_train)
+        x_val = scale(x_val)
+        x_test = scale(x_test)
 
         return x_train, x_val, x_test, y_train, y_val, y_test

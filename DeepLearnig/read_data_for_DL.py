@@ -13,7 +13,10 @@ def read_all_data(cwd, steps_back, steps_forward):
         for symbol in symbol_folders:
             os.chdir(symbol)
             file = os.listdir(symbol)
-            data = read_and_get_values(file[0], steps_back, steps_forward)
+            try:
+                data = read_and_get_values(file[0], steps_back, steps_forward)
+            except:
+                print(f'Something is wrong with {file[0]}')
             try:
                 all_data = pd.concat([all_data, data])
             except:
@@ -33,17 +36,14 @@ def up_or_down(future):
 def read_and_get_values(file, steps_back, steps_forward):
     data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
 
-    # # Standardizing the data
-    # data_raw['A'] = data_raw['A'] - data_raw['A'].iloc[0]
-    # data_raw['B'] = data_raw['B'] - data_raw['B'].iloc[0]
-
     # New column with difference
     data_raw['A-B'] = data_raw['A'] - data_raw['B']
+    data_raw['A-B'] = data_raw['A-B'].abs()
 
-    # Finding the maximum value within the middle third
-    third = int(data_raw.shape[0] * 0.33)
-    two_thirds = int(data_raw.shape[0] * 0.66)
-    equals_value = data_raw.iloc[third:two_thirds, 3].max()
+    # Finding the maximum value within the middle half
+    frac1 = int(data_raw.shape[0] * 0.25)
+    frac2 = int(data_raw.shape[0] * 0.75)
+    equals_value = data_raw.iloc[frac1:frac2, 3].abs().max()
     equals = data_raw.index[data_raw['A-B'] == equals_value].tolist()[0]
 
     # Finding the result after the maximum difference
