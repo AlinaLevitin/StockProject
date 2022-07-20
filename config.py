@@ -3,10 +3,13 @@
 # Configuration parameters for collecting data for DL:
 
 # time points before maximum difference
-STEPS_BACK = 20
+STEPS_BACK = 21
 
 # time points before maximum difference
 STEPS_FORWARD = 20
+
+# the minimum percent for win
+PERCENT = 1
 
 # --------------------------------------------------------------
 

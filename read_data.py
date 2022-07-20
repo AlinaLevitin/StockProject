@@ -6,6 +6,6 @@ import methods
 cwd = os.getcwd()
 
 
-data = DeepLearnig.read_all_data(cwd, config.STEPS_BACK, config.STEPS_FORWARD)
+data = DeepLearnig.Data(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT)
 
-methods.save_to_csv('data.csv', data, cwd)
+methods.save_to_csv('data.csv', data.data, cwd)
