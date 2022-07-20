@@ -1,3 +1,4 @@
+import math
 import pickle
 import pandas as pd
 import os
@@ -19,9 +20,17 @@ def save_pickle(data):
 
 
 def average(num):
-    sum_num = 0
-    for t in num:
-        sum_num = sum_num + t
-
-    avg = sum_num / len(num)
+    avg = sum(num) / len(num)
     return avg
+
+
+def variance(num, ddof=0):
+    n = len(num)
+    var = sum(x - average(num) ** 2 for x in num) / (n - ddof)
+    return var
+
+
+def stdev(num):
+    var = variance(num)
+    std_dev = math.sqrt(var)
+    return std_dev

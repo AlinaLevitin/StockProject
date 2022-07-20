@@ -1,11 +1,11 @@
 import os
-import DeepLearnig
+from DeepLearnig import Data
 import config
 import methods
 
 cwd = os.getcwd()
 
 
-data = DeepLearnig.Data(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT)
+data = Data.Data(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT)
 
 methods.save_to_csv('data.csv', data.data, cwd)
