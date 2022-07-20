@@ -10,33 +10,29 @@ def read_all_data(cwd, steps_back, steps_forward):
     for date in date_folders:
         symbol_folders = glob.glob(date + "\\*")
         for symbol in symbol_folders:
-            os.chdir(symbol)
-            file = os.listdir(symbol)
-            try:
-                data, data_chart = read_and_get_values(file[0], steps_back, steps_forward)
-            except:
-                print(f'Something is wrong with {file[0]}')
-            try:
-                all_data = pd.concat([all_data, data])
-                all_data_chart = pd.concat([all_data_chart, data_chart])
-            except:
-                all_data = data
-                all_data_chart = data_chart
+            files = os.listdir(symbol)
+            for file in files:
+                os.chdir(symbol)
+                data = read_and_get_values(file, steps_back, steps_forward)
+                try:
+                    all_data = pd.concat([all_data, data])
+                except:
+                    all_data = data
     all_data.reset_index(drop=True, inplace=True)
-    all_data_chart.reset_index(drop=True, inplace=True)
     save_to_csv('data.csv', all_data, cwd)
-    save_to_csv('data_chart.csv', all_data_chart, cwd)
     print(all_data)
 
 
-def up_or_down(future, past):
-    if future > past:
+def win_or_lose(plus, minus):
+    if not plus.empty and minus.empty:
         return 1
     else:
         return 0
 
 
-def read_and_get_values(file, steps_back, steps_forward):
+def read_and_get_values(file, steps_back, steps_forward, percent=1, get_chart=False):
+    one_percent = float(file.split('_')[4].replace('.csv', ''))
+
     data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
 
     # New column with difference
@@ -46,16 +42,28 @@ def read_and_get_values(file, steps_back, steps_forward):
     # Finding the maximum value within the middle half
     frac1 = int(data_raw.shape[0] * 0.25)
     frac2 = int(data_raw.shape[0] * 0.75)
-    equals_value = data_raw.iloc[frac1:frac2, 3].abs().max()
-    equals = data_raw.index[data_raw['A-B'] == equals_value].tolist()[0]
+    max_value = data_raw.iloc[frac1:frac2, 3].abs().max()
+    max_index = data_raw.index[data_raw['A-B'] == max_value].tolist()[0]
 
     # Finding the result after the maximum difference
-    A_future_result = up_or_down(data_raw.iloc[equals + steps_forward, 1], data_raw.iloc[equals, 1])
-    B_future_result = up_or_down(data_raw.iloc[equals + steps_forward, 2], data_raw.iloc[equals, 2])
+    future = data_raw.iloc[max_index:max_index + steps_forward, :3].copy()
+    A_0 = future.iloc[0, 1]
+    A_mask1 = future.A > A_0 + percent*one_percent
+    A_mask2 = future.A < A_0 - percent*one_percent
+    A_plus = future.loc[A_mask1, 'A']
+    A_minus = future.loc[A_mask2, 'A']
+    A_future_result = win_or_lose(A_plus, A_minus)
+
+    B_0 = future.iloc[0, 2]
+    B_mask1 = future.B > B_0 + percent*one_percent
+    B_mask2 = future.B < B_0 - percent*one_percent
+    B_plus = future.loc[B_mask1, 'B']
+    B_minus = future.loc[B_mask2, 'B']
+    B_future_result = win_or_lose(B_plus, B_minus)
 
     # finding the previous values and converting to dataframe.T
-    A_past = data_raw.iloc[equals - steps_back:equals + 1, 1].to_frame()
-    B_past = data_raw.iloc[equals - steps_back:equals + 1, 2].to_frame()
+    A_past = data_raw.iloc[max_index - steps_back:max_index + 1, 1].to_frame()
+    B_past = data_raw.iloc[max_index - steps_back:max_index + 1, 2].to_frame()
     df_A = A_past.T
     df_B = B_past.T
     A_len = df_A.shape[1]
@@ -75,8 +83,8 @@ def read_and_get_values(file, steps_back, steps_forward):
     data['B_(y)'] = B_future_result
 
     # Preparing chart DataFrame
-    A_chart = data_raw.iloc[equals:equals + steps_forward+1, 1].to_frame()
-    B_chart = data_raw.iloc[equals:equals + steps_forward+1, 2].to_frame()
+    A_chart = data_raw.iloc[max_index:max_index + steps_forward + 1, 1].to_frame()
+    B_chart = data_raw.iloc[max_index:max_index + steps_forward + 1, 2].to_frame()
     df_A_chart = A_chart.T
     df_B_chart = B_chart.T
     A_len_chart = df_A_chart.shape[1]
@@ -94,8 +102,7 @@ def read_and_get_values(file, steps_back, steps_forward):
     data_chart.drop(labels='index', axis=1, inplace=True)
     data_chart['A_(y)'] = A_future_result
     data_chart['B_(y)'] = B_future_result
-
-    return data, data_chart
+    return data
 
 
 def save_to_csv(name, data, cwd):

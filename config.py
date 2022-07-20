@@ -3,10 +3,10 @@
 # Configuration parameters for collecting data for DL:
 
 # time points before maximum difference
-steps_back = 10
+steps_back = 20
 
 # time points before maximum difference
-steps_forward = 5
+steps_forward = 20
 
 # --------------------------------------------------------------
 
