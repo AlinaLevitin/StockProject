@@ -3,10 +3,10 @@
 # Configuration parameters for collecting data for DL:
 
 # time points before maximum difference
-steps_back = 20
+STEPS_BACK = 20
 
 # time points before maximum difference
-steps_forward = 20
+STEPS_FORWARD = 20
 
 # --------------------------------------------------------------
 
@@ -14,16 +14,16 @@ steps_forward = 20
 
 # Batch size:
 
-batch_size = 32
+BATCH_SIZE = 32
 
 # Number of epochs:
 
-epochs = 200
+EPOCHS = 200
 
 # Layer dense:
 
-neurons = 150
+NEURONS = 150
 
 # Learning rate:
 
-learning_rate = 1e-6
+LEARNING_RATE = 1e-6

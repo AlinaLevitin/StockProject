@@ -19,8 +19,8 @@ def read_all_data(cwd, steps_back, steps_forward):
                 except:
                     all_data = data
     all_data.reset_index(drop=True, inplace=True)
-    save_to_csv('data.csv', all_data, cwd)
     print(all_data)
+    return all_data
 
 
 def win_or_lose(plus, minus):
@@ -48,15 +48,15 @@ def read_and_get_values(file, steps_back, steps_forward, percent=1, get_chart=Fa
     # Finding the result after the maximum difference
     future = data_raw.iloc[max_index:max_index + steps_forward, :3].copy()
     A_0 = future.iloc[0, 1]
-    A_mask1 = future.A > A_0 + percent*one_percent
-    A_mask2 = future.A < A_0 - percent*one_percent
+    A_mask1 = future.A > A_0 + percent * one_percent
+    A_mask2 = future.A < A_0 - percent * one_percent
     A_plus = future.loc[A_mask1, 'A']
     A_minus = future.loc[A_mask2, 'A']
     A_future_result = win_or_lose(A_plus, A_minus)
 
     B_0 = future.iloc[0, 2]
-    B_mask1 = future.B > B_0 + percent*one_percent
-    B_mask2 = future.B < B_0 - percent*one_percent
+    B_mask1 = future.B > B_0 + percent * one_percent
+    B_mask2 = future.B < B_0 - percent * one_percent
     B_plus = future.loc[B_mask1, 'B']
     B_minus = future.loc[B_mask2, 'B']
     B_future_result = win_or_lose(B_plus, B_minus)
@@ -105,11 +105,6 @@ def read_and_get_values(file, steps_back, steps_forward, percent=1, get_chart=Fa
     return data
 
 
-def save_to_csv(name, data, cwd):
-    os.chdir(cwd)
-    data.to_csv(name, index=False)
-
-
 def scale_data(df):
     return (df - df.min()) / (df.max() - df.min())
 
@@ -127,12 +122,12 @@ class TrainingData(Data):
     def __init__(self, data):
         super().__init__(data)
         self.x_train, self.x_val, self.x_test, self.y_train, self.y_val, self.y_test = self.split_data()
+        self.train_num = self.x_train.shape[0]
+        self.val_num = self.x_val.shape[0]
+        self.test_num = self.x_test.shape[0]
 
     def __repr__(self):
-        train_num = self.x_train.shape[0]
-        val_num = self.x_val.shape[0]
-        test_num = self.x_test.shape[0]
-        return f"training data: {train_num}, validation data: {val_num}, test data: {test_num}"
+        return f"training data: {self.train_num}, validation data: {self.val_num}, test data: {self.test_num}"
 
     def split_data(self):
         x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.2,
