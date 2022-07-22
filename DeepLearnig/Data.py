@@ -133,9 +133,9 @@ class TrainingData(Data):
         return f"training data: {self.train_num}, validation data: {self.val_num}, test data: {self.test_num}"
 
     def split_data(self):
-        x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.2,
+        x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.1,
                                                                             random_state=42)
-        x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.3,
+        x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.2,
                                                           random_state=42)
         x_train = scale_data(x_train)
         x_val = scale_data(x_val)

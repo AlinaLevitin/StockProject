@@ -11,8 +11,8 @@ cwd = os.getcwd()
 
 csv = 'data.csv'
 
-for steps_back in range(30):
-    data = Data.TrainingData(cwd, steps_back, config.STEPS_FORWARD, config.PERCENT)
+for steps_forward in range(1, 30):
+    data = Data.TrainingData(cwd, config.STEPS_BACK, steps_forward, config.PERCENT)
     model = DeepLearnig.DLModel(data.x_train,
                                 data.y_train,
                                 data.x_val,
@@ -38,8 +38,8 @@ for steps_back in range(30):
                     'training data': data.train_num,
                     'validation data': data.val_num,
                     'test data': data.test_num,
-                    'steps back': steps_back,
-                    'steps forward': config.STEPS_FORWARD,
+                    'steps back': config.STEPS_BACK,
+                    'steps forward': steps_forward,
                     'epochs': config.EPOCHS,
                     'neurons': config.NEURONS,
                     'learning_rate': config.LEARNING_RATE,
