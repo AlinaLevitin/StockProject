@@ -1,5 +1,4 @@
 import math
-import pickle
 import pandas as pd
 import os
 
@@ -15,10 +14,6 @@ def save_to_csv(name, data, cwd):
     data.to_csv(name, index=False)
 
 
-def save_pickle(data):
-    pickle.dump(data, open("data.p", "wb"))
-
-
 def average(num):
     avg = sum(num) / len(num)
     return avg
@@ -26,7 +21,7 @@ def average(num):
 
 def variance(num, ddof=0):
     n = len(num)
-    var = sum(x - average(num) ** 2 for x in num) / (n - ddof)
+    var = sum((x - average(num)) ** 2 for x in num) / (n - ddof)
     return var
 
 

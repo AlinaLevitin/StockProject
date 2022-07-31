@@ -11,19 +11,9 @@ cwd = os.getcwd()
 
 csv = 'data.csv'
 
-for steps_forward in range(1, 30):
+for steps_forward in range(5, 15):
     data = Data.TrainingData(cwd, config.STEPS_BACK, steps_forward, config.PERCENT)
-    model = DeepLearnig.DLModel(data.x_train,
-                                data.y_train,
-                                data.x_val,
-                                data.y_val,
-                                data.x_test,
-                                data.y_test,
-                                config.NEURONS,
-                                config.EPOCHS,
-                                config.LEARNING_RATE,
-                                config.BATCH_SIZE
-                                )
+    model = DeepLearnig.DLModel(data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
     acc = []
     for i in range(REPEATS):
         result = model.train_and_test()
