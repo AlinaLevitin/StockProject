@@ -20,13 +20,15 @@ PERCENT = 1
 BATCH_SIZE = 32
 
 # Number of epochs:
-
-EPOCHS = 200
+# Best results with 100 epochs
+EPOCHS = 100
 
 # Layer dense:
+# Best results with 150 neurons
 
 NEURONS = 150
 
 # Learning rate:
+# Best results with 10 ** -7
 
-LEARNING_RATE = 1e-6
+LEARNING_RATE = 10 ** -7

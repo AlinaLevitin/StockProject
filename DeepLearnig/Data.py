@@ -15,10 +15,19 @@ class Data:
         self.data = self.read_or_open()
 
     def read_or_open(self):
-        if self.file is None:
-            return self.read_all_data()
-        else:
-            return self.open_all_data()
+        try:
+            data = self.open_all_data()
+        except:
+            data = self.read_all_data()
+
+        return data
+
+
+    def open_all_data(self):
+        os.chdir(self.cwd)
+        df = pd.read_csv(self.file)
+        return df
+
 
     def read_all_data(self):
         analysis_hist = glob.glob(self.cwd + "\\analysis_hist")
@@ -59,14 +68,14 @@ class Data:
         A_mask2 = future.A < A_0 - self.percent * one_percent
         A_plus = future.loc[A_mask1, 'A']
         A_minus = future.loc[A_mask2, 'A']
-        A_future_result = win_or_lose(A_plus, A_minus)
+        A_future_result = self.win_or_lose(A_plus, A_minus)
 
         B_0 = future.iloc[0, 2]
         B_mask1 = future.B > B_0 + self.percent * one_percent
         B_mask2 = future.B < B_0 - self.percent * one_percent
         B_plus = future.loc[B_mask1, 'B']
         B_minus = future.loc[B_mask2, 'B']
-        B_future_result = win_or_lose(B_plus, B_minus)
+        B_future_result = self.win_or_lose(B_plus, B_minus)
 
         # finding the previous values and converting to dataframe.T
         A_past = data_raw.iloc[max_index - self.steps_back:max_index + 1, 1].to_frame()
@@ -111,10 +120,17 @@ class Data:
         data_chart['B_(y)'] = B_future_result
         return data
 
-    def open_all_data(self):
-        os.chdir(self.cwd)
-        df = pd.read_csv(self.file)
-        return df
+
+    @staticmethod
+    def win_or_lose(plus, minus):
+        if not plus.empty and minus.empty:
+            return 1
+        else:
+            return 0
+
+    @staticmethod
+    def scale_data(df):
+        return (df - df.min()) / (df.max() - df.min())
 
 
 class TrainingData(Data):
@@ -133,23 +149,12 @@ class TrainingData(Data):
         return f"training data: {self.train_num}, validation data: {self.val_num}, test data: {self.test_num}"
 
     def split_data(self):
-        x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.1,
+        x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.2,
                                                                             random_state=42)
         x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=0.2,
                                                           random_state=42)
-        x_train = scale_data(x_train)
-        x_val = scale_data(x_val)
-        x_test = scale_data(x_test)
+        x_train = self.scale_data(x_train)
+        x_val = self.scale_data(x_val)
+        x_test = self.scale_data(x_test)
 
         return x_train, x_val, x_test, y_train, y_val, y_test
-
-
-def win_or_lose(plus, minus):
-    if not plus.empty and minus.empty:
-        return 1
-    else:
-        return 0
-
-
-def scale_data(df):
-    return (df - df.min()) / (df.max() - df.min())

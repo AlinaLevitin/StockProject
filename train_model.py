@@ -11,32 +11,16 @@ cwd = os.getcwd()
 
 csv = 'data.csv'
 
-for steps_forward in range(5, 15):
-    data = Data.TrainingData(cwd, config.STEPS_BACK, steps_forward, config.PERCENT)
-    model = DeepLearnig.DLModel(data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
-    acc = []
-    for i in range(REPEATS):
-        result = model.train_and_test()
-        acc.append(result[1])
+data = Data.TrainingData(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT, file=csv)
+print(data)
+# methods.save_to_csv(csv, data, cwd)
 
-    accuracy_average = methods.average(acc)
-    stdev = methods.stdev(acc)
+for i in range(1, 15):
+    batch_size = 8 * i
+    model = DeepLearnig.DLModel(data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, batch_size)
 
-    summary_dict = {'average accuracy': accuracy_average,
-                    'STDEV': stdev,
-                    'reapets': REPEATS,
-                    'training data': data.train_num,
-                    'validation data': data.val_num,
-                    'test data': data.test_num,
-                    'steps back': config.STEPS_BACK,
-                    'steps forward': steps_forward,
-                    'epochs': config.EPOCHS,
-                    'neurons': config.NEURONS,
-                    'learning_rate': config.LEARNING_RATE,
-                    }
-
-    summary = pd.DataFrame([summary_dict])
-    print(summary)
+    training = DeepLearnig.Training(data, model)
+    summary = training.repeat_train(REPEATS)
 
     try:
         all_summary = pd.concat([all_summary, summary])
