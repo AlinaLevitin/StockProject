@@ -65,7 +65,7 @@ class Training:
                         'test data': self.data.test_num,
                         'steps back': self.data.steps_back,
                         'steps forward': self.data.steps_forward,
-                        'batch_size': self.batch_size,
+                        'batch_size': self.model.batch_size,
                         'epochs': self.model.epochs,
                         'neurons': self.model.neurons,
                         'learning_rate': self.model.learning_rate,
