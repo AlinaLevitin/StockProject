@@ -12,8 +12,8 @@ class DLModel:
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(self.neurons, activation='elu', input_shape=(self.data.x_train.shape[1],)),
-            tf.keras.layers.Dense(self.neurons, activation='tanh'),
+            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(self.data.x_train.shape[1],)),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(2, activation='softmax')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
@@ -34,7 +34,7 @@ class DLModel:
         return accuracy
 
 
-class Training:
+class Optimization:
 
     def __init__(self, data, model):
         self.data = data

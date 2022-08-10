@@ -19,8 +19,8 @@ for i in range(1, 15):
     batch_size = 8 * i
     model = DeepLearnig.DLModel(data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, batch_size)
 
-    training = DeepLearnig.Training(data, model)
-    summary = training.repeat_train(REPEATS)
+    opt = DeepLearnig.Optimization(data, model)
+    summary = opt.repeat_train(REPEATS)
 
     try:
         all_summary = pd.concat([all_summary, summary])

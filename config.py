@@ -16,7 +16,7 @@ PERCENT = 1
 # Configuration for training data:
 
 # Batch size:
-
+# Best results with batch sice of 32, 88 and 104
 BATCH_SIZE = 32
 
 # Number of epochs:
