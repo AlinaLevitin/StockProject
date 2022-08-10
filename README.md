@@ -28,6 +28,6 @@ The next two layers were decided by trial and error using a small representative
 
 I decided to use "Adam" gradient descent since I wanted the best optimizer using a dynamic learning rate and momentum during the gradient descent.
 
-Next, the model was optimized by "for looping" the hyperparameters: learning rate, number of epochs, number of neuorons in the deep learning layers and batch-size for stochastic gradient descent.
+Next, the model was optimized by "for looping" the hyperparameters: learning rate, number of epochs, number of neurons in the deep learning layers and batch-size for stochastic gradient descent.
 
 Finally, the best hyperparameters were used to generate the final model
