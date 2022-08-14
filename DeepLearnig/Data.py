@@ -17,11 +17,14 @@ class Data:
     def read_or_open(self):
         try:
             data = self.open_all_data()
-        except:
+        finally:
             data = self.read_all_data()
 
         return data
 
+    def save_all_data(self, name):
+        os.chdir(self.cwd)
+        self.data.to_csv(name, index=False)
 
     def open_all_data(self):
         os.chdir(self.cwd)

@@ -11,7 +11,7 @@ cwd = os.getcwd()
 
 csv = 'data.csv'
 
-data = Data.TrainingData(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT, file=csv)
+data = Data.TrainingData(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT)
 data.save_all_data('data.csv')
 print(data)
 # methods.save_to_csv(csv, data, cwd)
