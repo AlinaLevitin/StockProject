@@ -20,11 +20,11 @@ PERCENT = 1
 BATCH_SIZE = 64
 
 # Number of epochs:
-# Best results with 100 epochs
-EPOCHS = 100
+# Best results with 150 epochs
+EPOCHS = 150
 
 # Layer dense:
-# Best results with 150 neurons
+# Best results with 350 neurons
 
 NEURONS = 150
 

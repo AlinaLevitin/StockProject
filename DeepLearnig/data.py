@@ -5,22 +5,14 @@ from sklearn.model_selection import train_test_split
 
 
 class Data:
+    # A class to collect data for deeplearning
 
-    def __init__(self, cwd, steps_back, steps_forward, percent, file=None):
+    def __init__(self, cwd, steps_back, steps_forward, percent):
         self.cwd = cwd
         self.steps_back = steps_back
         self.steps_forward = steps_forward
         self.percent = percent
-        self.file = file
-        self.data = self.read_or_open()
-
-    def read_or_open(self):
-        try:
-            data = self.open_all_data()
-        finally:
-            data = self.read_all_data()
-
-        return data
+        self.data = self.read_all_data()
 
     def save_all_data(self, name):
         os.chdir(self.cwd)
@@ -30,7 +22,6 @@ class Data:
         os.chdir(self.cwd)
         df = pd.read_csv(self.file)
         return df
-
 
     def read_all_data(self):
         analysis_hist = glob.glob(self.cwd + "\\analysis_hist")
@@ -123,7 +114,6 @@ class Data:
         data_chart['B_(y)'] = B_future_result
         return data
 
-
     @staticmethod
     def win_or_lose(plus, minus):
         if not plus.empty and minus.empty:
@@ -138,15 +128,15 @@ class Data:
 
 class TrainingData(Data):
 
-    def __init__(self,cwd, steps_back, steps_forward, percent, file=None):
-        super().__init__(cwd, steps_back, steps_forward, percent, file)
+    def __init__(self,cwd, steps_back, steps_forward, percent):
+        super().__init__(cwd, steps_back, steps_forward, percent)
         self.x = self.data.iloc[:, :-3]
         self.y = self.data.iloc[:, -2:]
         self.x_train, self.x_val, self.x_test, self.y_train, self.y_val, self.y_test = self.split_data()
         self.train_num = self.x_train.shape[0]
         self.val_num = self.x_val.shape[0]
         self.test_num = self.x_test.shape[0]
-        self.data = self.read_or_open()
+        self.data = self.read_all_data()
 
     def __repr__(self):
         return f"training data: {self.train_num}, validation data: {self.val_num}, test data: {self.test_num}"
