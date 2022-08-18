@@ -11,6 +11,9 @@ STEPS_FORWARD = 20
 # the minimum percent for win
 PERCENT = 1
 
+# Interval for collecting data
+INTERVAL = 10
+
 # --------------------------------------------------------------
 
 # Configuration for training data:
@@ -20,13 +23,13 @@ PERCENT = 1
 BATCH_SIZE = 64
 
 # Number of epochs:
-# Best results with 150 epochs
-EPOCHS = 150
+# Best results with 300 epochs
+EPOCHS = 300
 
 # Layer dense:
-# Best results with 350 neurons
+# Best results with 50 neurons
 
-NEURONS = 150
+NEURONS = 50
 
 # Learning rate:
 # Best results with 10 ** -7

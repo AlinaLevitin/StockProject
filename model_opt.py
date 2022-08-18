@@ -1,26 +1,24 @@
 import os
 import methods
-from DeepLearnig import data
 import DeepLearnig
 import config
 import pandas as pd
 
-REPEATS = 10
+REPEATS = 100
 
 cwd = os.getcwd()
 
-csv = 'data.csv'
+training_data = DeepLearnig.TrainingData(cwd)
+training_data.open_all_data()
+training_data.split_data()
+print(training_data)
 
-data = data.TrainingData(cwd, config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT)
-data.save_all_data('data.csv')
-print(data)
-# methods.save_to_csv(csv, data, cwd)
 
-for i in range(1, 10):
+for i in range(1, 5):
     neurons = 50 * i
-    model = DeepLearnig.DLModel(data, neurons, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
-
-    opt = DeepLearnig.Optimization(data, model)
+    model = DeepLearnig.DLModel(training_data, neurons, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
+    print(model)
+    opt = DeepLearnig.Optimization(training_data, model)
     summary = opt.repeat_train(REPEATS)
 
     try:

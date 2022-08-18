@@ -1,6 +1,6 @@
 import os
 import methods
-from DeepLearnig import data
+from DeepLearnig import Data
 import DeepLearnig
 import config
 import pandas as pd
