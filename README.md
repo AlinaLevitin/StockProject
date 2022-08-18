@@ -15,7 +15,7 @@ After optimizing the hyperparameters: learning rate, number of epochs, number of
 **In long:** :)
 I decided to use OOP and that creating a custom deep learning package will be the most visually pleasing method.
 
-The stockmarket data that S.G collected was further maniulated to collect "winning" and "losing" instances for training the model using the module "Data.py"
+The stockmarket data that S.G collected was further maniulated to collect "winning" and "losing" instances for training the model using the module "data.py"
 
 After some optimizations using a small representative data set, I decided to use three dense layers using "tf.keras.models.Sequential".
 The data manipulation done by S.G, generated stockmarket values ranging from roughly -10 to +10 as a function of time.
