@@ -24,14 +24,14 @@ BATCH_SIZE = 64
 
 # Number of epochs:
 # Best results with 300 epochs
-EPOCHS = 300
+EPOCHS = 100
 
 # Layer dense:
 # Best results with 50 neurons
 
-NEURONS = 50
+NEURONS = 100
 
 # Learning rate:
 # Best results with 10 ** -7
 
-LEARNING_RATE = 10 ** -7
+LEARNING_RATE = 10 ** -6

@@ -1,5 +1,5 @@
 import os
-import methods
+import utils
 from DeepLearnig import Data
 import DeepLearnig
 import config
@@ -25,4 +25,4 @@ for i in range(1, 10):
         all_summary = summary
 
     all_summary.reset_index(drop=True, inplace=True)
-    methods.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', all_summary, cwd)
+    utils.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', all_summary, cwd)

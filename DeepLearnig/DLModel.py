@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import keras
 import tensorflow as tf
 
 
@@ -36,14 +37,14 @@ class DLModel:
         callbacks = None
 
         if save:
-            cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path, save_weights_only=True, verbose=1, period=5)
+            cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path, save_weights_only=True, verbose=0, period=5)
             callbacks = [cp_callback]
 
         self.model.fit(self.data.x_train, self.data.y_train,
                        epochs=self.epochs,
                        validation_data=(self.data.x_val, self.data.y_val),
                        batch_size=self.batch_size, callbacks=callbacks,
-                       verbose=1
+                       verbose=0
                        )
 
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
@@ -51,6 +52,16 @@ class DLModel:
 
         return accuracy
 
-    def load_model(self):
+    def load_callback(self):
         latest = tf.train.latest_checkpoint(self.checkpoint_path)
         self.model.load_weights(latest)
+
+    def save_model(self, name) -> str:
+        self.model.save(name + '.h5')
+
+    def load_model(self, name):
+        self.model = keras.models.load_model(name + '.h5')
+
+
+
+

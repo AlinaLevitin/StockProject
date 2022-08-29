@@ -1,5 +1,5 @@
 import os
-import methods
+import utils
 import DeepLearnig
 import config
 
@@ -16,7 +16,8 @@ model = DeepLearnig.DLModel(cwd)
 print(model)
 opt = DeepLearnig.Optimization(model, training_data)
 summary = opt.repeat_train(REPEATS, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
+model.save_model('testing_model')
 
-methods.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', summary, cwd)
+utils.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', summary, cwd)
 
 

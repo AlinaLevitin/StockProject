@@ -1,8 +1,12 @@
 import os
-import methods
+import utils
 import config
+import DeepLearnig
 
-#
-# data = pd.read_csv('data.csv')
+cwd = os.getcwd()
+
+model = DeepLearnig.DLModel(cwd)
+
+model.load_model()
 
 

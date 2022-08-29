@@ -8,10 +8,10 @@ class Optimization:
         self.model = model
         self.data = data
 
-    def repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size):
+    def repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size, save=None):
         acc = []
         for i in range(repeats):
-            result = self.model.train_and_test(self.data, neurons, epochs, learning_rate, batch_size)
+            result = self.model.train_and_test(self.data, neurons, epochs, learning_rate, batch_size, save)
             acc.append(result)
 
         summary = self.summary(accuracy=acc)

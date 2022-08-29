@@ -1,5 +1,5 @@
 import os
-import methods
+import utils
 import DeepLearnig
 import config
 import pandas as pd
@@ -16,10 +16,10 @@ print(training_data)
 
 for i in range(1, 5):
     neurons = 50 * i
-    model = DeepLearnig.DLModel(training_data, neurons, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
+    model = DeepLearnig.DLModel(cwd)
     print(model)
-    opt = DeepLearnig.Optimization(training_data, model)
-    summary = opt.repeat_train(REPEATS)
+    opt = DeepLearnig.Optimization(model, training_data)
+    summary = opt.repeat_train(REPEATS, neurons, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
 
     try:
         all_summary = pd.concat([all_summary, summary])
@@ -27,6 +27,6 @@ for i in range(1, 5):
         all_summary = summary
 
     all_summary.reset_index(drop=True, inplace=True)
-    methods.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', all_summary, cwd)
+    utils.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', all_summary, cwd)
 
 
