@@ -33,15 +33,16 @@ class DLModel:
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss='categorical_crossentropy',
                            metrics=['accuracy'])
-        cp_callback = None
+        callbacks = None
 
         if save:
             cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path, save_weights_only=True, verbose=1, period=5)
+            callbacks = [cp_callback]
 
         self.model.fit(self.data.x_train, self.data.y_train,
                        epochs=self.epochs,
                        validation_data=(self.data.x_val, self.data.y_val),
-                       batch_size=self.batch_size, callbacks=[cp_callback],
+                       batch_size=self.batch_size, callbacks=callbacks,
                        verbose=1
                        )
 
