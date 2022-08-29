@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-import glob
 import json
 
 
@@ -20,7 +19,7 @@ class Data:
         params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent': self.percent, 'interval': self.interval}
         json_save = json.dumps(params)
         with open(f'params_{name}.json', 'w') as json_file:
-            json_file.json.write(json_save)
+            json_file.write(json_save)
 
     def open_all_data(self, name='data'):
         os.chdir(self.cwd)
@@ -40,19 +39,16 @@ class Data:
         self.percent = percent
         self.interval = interval
 
-        analysis_hist = glob.glob(self.cwd + "\\analysis_hist")
-        date_folders = glob.glob(analysis_hist[0] + "\\*")
-        for date in date_folders:
-            symbol_folders = glob.glob(date + "\\*")
-            for symbol in symbol_folders:
-                files = os.listdir(symbol)
-                for file in files:
-                    os.chdir(symbol)
-                    data = self.read_and_get_values(file)
-                    try:
-                        all_data = pd.concat([all_data, data])
-                    except:
-                        all_data = data
+        analysis_hist = self.cwd + "\\all_hist"
+        files = os.listdir(analysis_hist)
+        for file in files:
+            os.chdir(analysis_hist)
+            data = self.read_and_get_values(file)
+            try:
+                all_data = pd.concat([all_data, data])
+            except:
+                all_data = data
+            print(f"analyzed {file}")
         all_data.reset_index(drop=True, inplace=True)
         self.data = all_data
 
@@ -90,7 +86,6 @@ class Data:
             data['B_long_(y)'] = B_future_long
             data['A_short_(y)'] = A_future_short
             data['B_short_(y)'] = B_future_short
-
         return data
 
     @staticmethod
