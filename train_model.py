@@ -14,8 +14,7 @@ print(training_data)
 
 model = DeepLearnig.DLModel(cwd)
 print(model)
-opt = DeepLearnig.Optimization(model, training_data)
-summary = opt.repeat_train(REPEATS, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
+summary = model.train_and_test(training_data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE, save=True)
 model.save_model('testing_model')
 
 utils.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', summary, cwd)

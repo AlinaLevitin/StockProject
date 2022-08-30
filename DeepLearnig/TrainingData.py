@@ -4,8 +4,55 @@ from sklearn.model_selection import train_test_split
 
 
 class TrainingData(Data):
-    # A class to collect data for deeplearning
-    def __init__(self, cwd):
+    """
+
+    A class to collect data for deep-learning training \n
+    Use the class function split_data to split the data to train, validation and test data sets
+
+    ...
+
+    Attributes
+    ----------
+    cwd : str
+        a string of the working directory
+    steps_back : int
+        the number of time points in the past
+    steps_forward : int
+        the number of time points in the future
+    percent : int
+        percent as the threshold for win or loss outcome
+    interval : int
+        interval between time points collected
+    data : pandas DataFrame
+        all the data collected according to the above parameters
+        use class method read_all_data with the chosen parameters
+        or open existing data with class method open_all_data
+
+    Methods
+    -------
+    FROM Data CLASS:
+    save_all_data(self, name='data')
+        saves the data as csv file and the parameters as json file
+        default name is 'data'
+    open_all_data(self, name='data')
+        opens the data from csv file and the parameters from json file
+        default name is 'data'
+    read_all_data(self, steps_back, steps_forward, percent, interval)
+        reads the data according to the chosen parameters
+    read_and_get_values(self, file)
+        reads the data according to the chosen parameters from a chosen file
+    split_data(self):
+        splits the data to train, validation and test data sets randomly
+
+    """
+
+    def __init__(self, cwd: str):
+        """
+
+        :param cwd: a string of the working directory
+
+        """
+
         super().__init__(cwd)
         self.data = None
         self.x = None
@@ -24,6 +71,7 @@ class TrainingData(Data):
         return f"training data: {self.train_num}, validation data: {self.val_num}, test data: {self.test_num}"
 
     def split_data(self):
+        """splits the data to train, validation and test data sets randomly"""
         self.x = self.data.iloc[:, :-3]
         self.y = self.data.iloc[:, -2:]
 
@@ -47,5 +95,12 @@ class TrainingData(Data):
 
     @staticmethod
     def scale_data(df):
+        """
+        to scale the data to range between -1 and 1
+
+        :param df: pandas DataFrame of inputs
+        :return: pandas DataFrame with data ranging between -1 and 1
+        """
+
         return (df - df.min()) / (df.max() - df.min())
 
