@@ -21,13 +21,13 @@ def average(num):
     return avg
 
 
-def variance(num, ddof=0):
+def variance(num):
     n = len(num)
-    var = sum((x - average(num)) ** 2 for x in num) / (n - ddof)
+    var = sum((x - average(num)) ** 2 for x in num) / n
     return var
 
 
-def stdev(num):
+def stddev(num):
     var = variance(num)
     std_dev = math.sqrt(var)
     return std_dev

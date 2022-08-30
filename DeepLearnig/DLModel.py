@@ -5,7 +5,7 @@ import tensorflow as tf
 import pandas as pd
 import os
 
-import DL_utils
+import utils
 
 
 class DLModel:
@@ -162,8 +162,8 @@ class DLModel:
 
     def summary(self, accuracy):
 
-        accuracy_average = DL_utils.average(accuracy)
-        stddev = DL_utils.stddev(accuracy)
+        accuracy_average = utils.average(accuracy)
+        stddev = utils.stddev(accuracy)
 
         summary_dict = {'average accuracy': accuracy_average,
                         'STDEV': stddev,
