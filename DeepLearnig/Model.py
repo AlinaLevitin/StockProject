@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function
+import json
 
 import keras
 import tensorflow as tf
@@ -129,12 +129,12 @@ class Model:
                        epochs=self.epochs,
                        validation_data=(self.data.x_val, self.data.y_val),
                        batch_size=self.batch_size, callbacks=callbacks,
-                       verbose=0
+                       verbose=1
                        )
 
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
         accuracy = result[1]
-
+        self.summary(accuracy)
         return accuracy
 
     def load_callback(self):
@@ -144,10 +144,22 @@ class Model:
     def save_model(self, name: str):
         os.chdir(self.cwd)
         self.model.save(name + '.h5')
+        params = {'neurons': self.neurons, 'epochs': self.epochs, 'learning_rate': self.learning_rate,
+                  'batch_size': self.batch_size}
+        json_save = json.dumps(params)
+        with open(f'params_{name}.json', 'w') as json_file:
+            json_file.write(json_save)
 
     def load_model(self, name: str):
         os.chdir(self.cwd)
         self.model = keras.models.load_model(name + '.h5')
+        with open(f'params_{name}.json') as json_file:
+            params = json.load(json_file)
+        self.neurons = params['neurons']
+        self.epochs = params['epochs']
+        self.learning_rate = params['learning_rate']
+        self.batch_size = params['batch_size']
+        print(self)
 
     def repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size):
         acc = []
@@ -155,10 +167,7 @@ class Model:
             result = self.train_and_test(self.data, neurons, epochs, learning_rate, batch_size)
             acc.append(result)
 
-        summary = self.summary(accuracy=acc)
-        print(summary)
-
-        return summary
+        self.summary(accuracy=acc)
 
     def summary(self, accuracy):
 
@@ -180,7 +189,7 @@ class Model:
                         }
 
         summary = pd.DataFrame([summary_dict])
-        return summary
+        utils.save_to_csv(f'summary_for_{len(accuracy)}_repeats.csv', summary, self.cwd)
 
 
 
