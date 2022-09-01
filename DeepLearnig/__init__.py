@@ -2,5 +2,5 @@
 
 """
 from .TrainingData import TrainingData
-from .DLModel import DLModel
+from .Model import Model
 from .Data import Data

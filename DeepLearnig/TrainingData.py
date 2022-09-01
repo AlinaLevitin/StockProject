@@ -75,8 +75,8 @@ class TrainingData(Data):
 
     def split_data(self):
         """splits the data to train, validation and test data sets randomly"""
-        self.x = self.data.iloc[:, :-3]
-        self.y = self.data.iloc[:, -2:]
+        self.x = self.data.iloc[:, :-4]
+        self.y = self.data.iloc[:, -4:]
 
         x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=0.2,
                                                                             random_state=42)
