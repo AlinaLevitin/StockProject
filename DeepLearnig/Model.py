@@ -8,7 +8,7 @@ import os
 import utils
 
 
-class DLModel:
+class Model:
     """
         A class to generate a model for deep learning
 
