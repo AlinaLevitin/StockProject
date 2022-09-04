@@ -17,20 +17,29 @@ def save_to_csv(name, data, cwd):
 
 
 def average(num):
-    avg = sum(num) / len(num)
-    return avg
+    if isinstance(num, list):
+        avg = sum(num) / len(num)
+        return avg
+    else:
+        return num
 
 
 def variance(num):
-    n = len(num)
-    var = sum((x - average(num)) ** 2 for x in num) / n
-    return var
+    if isinstance(num, list):
+        n = len(num)
+        var = sum((x - average(num)) ** 2 for x in num) / n
+        return var
+    else:
+        return num
 
 
 def stddev(num):
-    var = variance(num)
-    std_dev = math.sqrt(var)
-    return std_dev
+    if isinstance(num, list):
+        var = variance(num)
+        std_dev = math.sqrt(var)
+        return std_dev
+    else:
+        return num
 
 
 def copy_to_one_dir(cwd):

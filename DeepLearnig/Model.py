@@ -74,15 +74,27 @@ class Model:
         """
         return f"neurons: {self.neurons}, epochs: {self.epochs}, learning rate: {self.learning_rate}, batch size: {self.batch_size}"
 
-    def train_and_test(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int, save: bool = False):
+    def set_model(self, neurons: int, epochs: int, learning_rate: float, batch_size: int):
+        self.neurons = neurons
+        self.epochs = epochs
+        self.learning_rate = learning_rate
+        self.batch_size = batch_size
+
+        self.model = tf.keras.models.Sequential([
+            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(self.data.x_train.shape[1],)),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.data.y_train.shape[1], activation='softmax')])
+        self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
+                           loss='categorical_crossentropy',
+                           metrics=['accuracy'])
+
+    def train_and_test(self, data,  save: bool = False):
         """
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
-        :param neurons: the number of neurons in the model
-        :param epochs: the number of epochs for training
-        :param learning_rate:
-        :param batch_size:
         :param save:
         :return:
         """
@@ -108,20 +120,7 @@ class Model:
 
         """
         self.data = data
-        self.neurons = neurons
-        self.epochs = epochs
-        self.learning_rate = learning_rate
-        self.batch_size = batch_size
 
-        self.model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(self.data.x_train.shape[1],)),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.data.y_train.shape[1], activation='softmax')])
-        self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
-                           loss='categorical_crossentropy',
-                           metrics=['accuracy'])
         callbacks = None
 
         if save:
@@ -166,9 +165,10 @@ class Model:
         print(self)
 
     def repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size):
+        self.set_model(neurons, epochs, learning_rate, batch_size)
         acc = []
         for i in range(repeats):
-            result = self.train_and_test(self.data, neurons, epochs, learning_rate, batch_size)
+            result = self.train_and_test(self.data)
             acc.append(result)
 
         self.summary(accuracy=acc)
