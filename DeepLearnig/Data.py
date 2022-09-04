@@ -31,16 +31,16 @@ class Data:
 
     Methods
     -------
+    read_all_data(self, steps_back, steps_forward, percent, interval)
+        reads the data according to the chosen parameters
+    read_and_get_values(self, file)
+        reads the data according to the chosen parameters from a chosen file
     save_all_data(self, name='data')
         saves the data as csv file and the parameters as json file
         default name is 'data'
     open_all_data(self, name='data')
         opens the data from csv file and the parameters from json file
         default name is 'data'
-    read_all_data(self, steps_back, steps_forward, percent, interval)
-        reads the data according to the chosen parameters
-    read_and_get_values(self, file)
-        reads the data according to the chosen parameters from a chosen file
 
     """
 
@@ -58,47 +58,11 @@ class Data:
         self.interval = None
         self.data = None
 
-    def save_all_data(self, name: str = 'data'):
-        """
-        saves the data to a csv file and the parameters to a json file
+    def __repr__(self):
+        return f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}," \
+               f"percent: {self.percent}, interval: {self.interval}"
 
-        :param name: name of file, default is data
-        :type name: str optional
 
-        :return: csv file
-        saves a csv file with the data and a json file with the parameters
-        """
-
-        os.chdir(self.cwd)
-        self.data.to_csv(f'{name}.csv', index=False)
-        params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent': self.percent,
-                  'interval': self.interval}
-        json_save = json.dumps(params)
-        with open(f'params_{name}.json', 'w') as json_file:
-            json_file.write(json_save)
-
-    def open_all_data(self, name: str = 'data'):
-        """
-        opens the data from csv file and the parameters from json file
-
-        :param name: name of file, default is data
-        :type name: str optional
-
-        :return: Data instance
-        opens a csv file with the data and a json file with the parameters
-        """
-
-        os.chdir(self.cwd)
-        data = pd.read_csv(f'{name}.csv')
-        with open(f'params_{name}.json') as json_file:
-            params = json.load(json_file)
-        self.steps_back = params['steps_back']
-        self.steps_forward = params['steps_forward']
-        self.percent = params['percent']
-        self.interval = params['interval']
-        print(
-            f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, percent: {self.percent} interval: {self.interval}")
-        self.data = data
 
     def read_all_data(self, steps_back: int, steps_forward: int, percent: int, interval: int):
         """
@@ -178,6 +142,50 @@ class Data:
             data.index.name = 'index'
             data = pd.concat([data, time_point])
         return data
+
+    def save_all_data(self, name: str = 'data'):
+        """
+        saves the data to a csv file and the parameters to a json file
+
+        :param name: name of file, default is data
+        :type name: str optional
+
+        :return: csv file
+        saves a csv file with the data and a json file with the parameters
+        """
+
+        os.chdir(self.cwd)
+        self.data.to_csv(f'{name}.csv', index=False)
+        params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent': self.percent,
+                  'interval': self.interval}
+        json_save = json.dumps(params)
+        with open(f'params_{name}.json', 'w') as json_file:
+            json_file.write(json_save)
+        print(self)
+        print(f'saved the data as {name}.csv and the parameters as params_{name}.json')
+
+    def open_all_data(self, name: str = 'data'):
+        """
+        opens the data from csv file and the parameters from json file
+
+        :param name: name of file, default is data
+        :type name: str optional
+
+        :return: Data instance
+        opens a csv file with the data and a json file with the parameters
+        """
+
+        os.chdir(self.cwd)
+        data = pd.read_csv(f'{name}.csv')
+        with open(f'params_{name}.json') as json_file:
+            params = json.load(json_file)
+        self.steps_back = params['steps_back']
+        self.steps_forward = params['steps_forward']
+        self.percent = params['percent']
+        self.interval = params['interval']
+        print(self)
+        self.data = data
+        print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
 
     @staticmethod
     def long(future, symbol: str, one_percent: float) -> bool:

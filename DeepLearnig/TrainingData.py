@@ -96,6 +96,8 @@ class TrainingData(Data):
         self.train_num = self.x_train.shape[0]
         self.val_num = self.x_val.shape[0]
         self.test_num = self.x_test.shape[0]
+        print('Data was split')
+        print(self)
 
     @staticmethod
     def scale_data(df):

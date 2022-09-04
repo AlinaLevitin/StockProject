@@ -16,18 +16,15 @@ training_data.open_all_data()
 training_data.split_data()
 print(training_data)
 
+all_summary = pd.DataFrame()
 
 for i in range(1, 5):
     neurons = 50 * i
     model = DeepLearnig.DLModel(cwd)
-    print(model)
     opt = DeepLearnig.Optimization(model, training_data)
     summary = opt.repeat_train(REPEATS, neurons, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
-
-    try:
-        all_summary = pd.concat([all_summary, summary])
-    except:
-        all_summary = summary
+    print(model)
+    all_summary = pd.concat([all_summary, summary])
 
     all_summary.reset_index(drop=True, inplace=True)
     utils.save_to_csv(f'summary_for_{REPEATS}_repeats.csv', all_summary, cwd)
