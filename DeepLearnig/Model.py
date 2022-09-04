@@ -1,5 +1,8 @@
+"""
+Model class to generate a neural network
+This class allows trainig, saving, loading, saving and using the model
+"""
 import json
-
 import keras
 import tensorflow as tf
 import pandas as pd
@@ -114,7 +117,8 @@ class Model:
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(self.data.x_train.shape[1],)),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(2, activation='softmax')])
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.data.y_train.shape[1], activation='softmax')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss='categorical_crossentropy',
                            metrics=['accuracy'])
@@ -191,6 +195,10 @@ class Model:
         summary = pd.DataFrame([summary_dict])
         utils.save_to_csv(f'summary_for_{len(accuracy)}_repeats.csv', summary, self.cwd)
 
+    def predict_values(self, x):
+        x_numpy = x.to_numpy(copy=True)
+        result = self.model.predict(x_numpy)
+        return result
 
 
 

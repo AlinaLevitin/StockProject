@@ -1,5 +1,5 @@
 """
-
+Data class to handle csv time-point data sets and convert them to pandas Dataframes
 """
 import pandas as pd
 import os
@@ -180,7 +180,7 @@ class Data:
         return data
 
     @staticmethod
-    def long(future, symbol: str, one_percent: float) -> int:
+    def long(future, symbol: str, one_percent: float) -> bool:
         """
         static method to check for win or loss in long position
 
@@ -189,8 +189,7 @@ class Data:
         :param symbol: 'A' or 'B'
         :param one_percent: float
 
-        :return:
-             the nuber represents one percent for the corresponding time series
+        :return: bool
         """
 
         if symbol == 'A':
@@ -211,7 +210,7 @@ class Data:
             return 0
 
     @staticmethod
-    def short(future, symbol: str, one_percent: float) -> int:
+    def short(future, symbol: str, one_percent: float) -> bool:
         """
         static method to check for win or loss in short position
 
@@ -220,8 +219,7 @@ class Data:
         :param symbol: 'A' or 'B'
         :param one_percent: float
 
-        :return:
-             the nuber represents one percent for the corresponding time series
+        :return: bool
         """
 
         if symbol == 'A':

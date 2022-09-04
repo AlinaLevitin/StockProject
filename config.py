@@ -1,3 +1,7 @@
+"""
+Configuration file for data collection/processing and training the neural network
+"""
+
 # --------------------------------------------------------------
 
 # Configuration parameters for collecting data for DL:
@@ -19,19 +23,13 @@ INTERVAL = 10
 # Configuration for training data:
 
 # Batch size:
-# Best results with batch size of 56, 64, 88 and 104
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
 # Number of epochs:
-# Best results with 300 epochs
-EPOCHS = 100
+EPOCHS = 250
 
 # Layer dense:
-# Best results with 50 neurons
-
-NEURONS = 100
+NEURONS = 300
 
 # Learning rate:
-# Best results with 10 ** -7
-
-LEARNING_RATE = 10 ** -6
+LEARNING_RATE = 10 ** -8

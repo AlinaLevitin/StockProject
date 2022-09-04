@@ -1,5 +1,6 @@
 """
-
+TrainingData class inherits from Data class to split the data to train, validation and test
+for deep learning
 """
 from .Data import Data
 
