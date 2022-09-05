@@ -1,6 +1,7 @@
 """
 Run this for training the neural network
 """
+# TODO: train the model
 import os
 import DeepLearnig
 import config

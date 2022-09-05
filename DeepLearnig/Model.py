@@ -1,7 +1,9 @@
 """
 Model class to generate a neural network
-This class allows trainig, saving, loading, saving and using the model
+This class allows training, saving, loading, saving and using the model
 """
+# TODO: finish the documentation of Model class
+
 import json
 import keras
 import tensorflow as tf
