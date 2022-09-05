@@ -1,3 +1,6 @@
+"""
+Supporting file containing utility functions
+"""
 import math
 import pandas as pd
 import os
@@ -5,18 +8,39 @@ import glob
 import shutil
 
 
-def open_csv(cwd, file_name):
+def open_csv(cwd: str, file_name: str):
+    """
+    open a csv using pandas
+
+    :param cwd: current working directory using cwd = os.getcwd()
+    :param file_name: the name of the file
+    :return: DataFrame
+    """
     os.chdir(cwd)
     df = pd.read_csv(file_name)
     return df
 
 
-def save_to_csv(name, data, cwd):
+def save_to_csv(name: str, data, cwd: str):
+    """
+    save to csv file using pandas
+
+    :param name: name for the file
+    :param data: the data to save in a form of pandas DataFrame
+    :type data: pandas DataFrame
+    :param cwd: current working directory using cwd = os.getcwd()
+    :return: saves the data to csv file
+    """
     os.chdir(cwd)
     data.to_csv(name, index=False)
 
 
-def average(num):
+def average(num: list) -> float:
+    """
+    calculates the average of numbers in a list
+    :param num: list of numbers
+    :return: average of numbers
+    """
     if isinstance(num, list):
         avg = sum(num) / len(num)
         return avg
@@ -24,25 +48,40 @@ def average(num):
         return num
 
 
-def variance(num):
+def variance(num: list) -> float:
+    """
+    calculates variance of numbers in a list
+    :param num: list of numbers
+    :return: variance of numbers
+    """
     if isinstance(num, list):
         n = len(num)
         var = sum((x - average(num)) ** 2 for x in num) / n
         return var
     else:
-        return num
+        return 0
 
 
-def stddev(num):
+def stddev(num: list) -> float:
+    """
+    calculates the standard deviation of numbers in a list
+    :param num: list of numbers
+    :return: standard deviation of numbers
+    """
     if isinstance(num, list):
         var = variance(num)
         std_dev = math.sqrt(var)
         return std_dev
     else:
-        return num
+        return 0
 
 
-def copy_to_one_dir(cwd):
+def copy_to_one_dir(cwd: str):
+    """
+    copies all csv files in one directory, this saves time when reading the data
+    :param cwd: current working directory using cwd = os.getcwd()
+    :return: copies all csv files in one directory
+    """
     analysis_hist = glob.glob(cwd + "\\analysis_hist")
     date_folders = glob.glob(analysis_hist[0] + "\\*")
     for date in date_folders:

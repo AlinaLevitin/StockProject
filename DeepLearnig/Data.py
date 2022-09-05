@@ -62,8 +62,6 @@ class Data:
         return f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}," \
                f"percent: {self.percent}, interval: {self.interval}"
 
-
-
     def read_all_data(self, steps_back: int, steps_forward: int, percent: int, interval: int):
         """
         reads the data according to the chosen parameters
@@ -188,7 +186,7 @@ class Data:
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
 
     @staticmethod
-    def long(future, symbol: str, one_percent: float) -> bool:
+    def long(future, symbol: str, one_percent: float) -> int:
         """
         static method to check for win or loss in long position
 
@@ -218,7 +216,7 @@ class Data:
             return 0
 
     @staticmethod
-    def short(future, symbol: str, one_percent: float) -> bool:
+    def short(future, symbol: str, one_percent: float) -> int:
         """
         static method to check for win or loss in short position
 

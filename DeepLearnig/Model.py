@@ -142,7 +142,7 @@ class Model:
 
     def load_callback(self):
         latest = tf.train.latest_checkpoint(self.checkpoint_path)
-        self.model.load_weights(latest)
+        self.model.load_weights(self.checkpoint_path)
 
     def save_model(self, name: str):
         os.chdir(self.cwd)
