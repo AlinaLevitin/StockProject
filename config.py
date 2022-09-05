@@ -1,6 +1,9 @@
 """
 Configuration file for data collection/processing and training the neural network
 """
+import os
+
+CWD = os.getcwd()
 
 # --------------------------------------------------------------
 
@@ -19,6 +22,13 @@ PERCENT = 1
 INTERVAL = 10
 
 # --------------------------------------------------------------
+# Training data split
+
+TEST_DATA = 0.2
+
+VALIDATION_DATA = 0.1
+
+# --------------------------------------------------------------
 
 # Configuration for training data:
 
@@ -26,7 +36,7 @@ INTERVAL = 10
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 250
+EPOCHS = 1
 
 # Layer dense:
 NEURONS = 300

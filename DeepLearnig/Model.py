@@ -83,16 +83,19 @@ class Model:
         self.learning_rate = learning_rate
         self.batch_size = batch_size
 
+        input_shape = self.data.x.shape[1]
+
         self.model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(self.data.x_train.shape[1],)),
+            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.data.y_train.shape[1], activation='softmax')])
+            tf.keras.layers.Dense(4, activation='softmax')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss='categorical_crossentropy',
                            metrics=['accuracy'])
         self.model.summary()
+        print(self.model)
         return self.model
 
     def train_and_test(self, data,  save: bool = False):
@@ -180,29 +183,35 @@ class Model:
 
     def summary(self, accuracy):
 
+        if isinstance(accuracy, list):
+            repeats = len(accuracy)
+        else:
+            repeats = 1
+
         accuracy_average = utils.average(accuracy)
         stddev = utils.stddev(accuracy)
 
         summary_dict = {'average accuracy': accuracy_average,
                         'STDEV': stddev,
-                        'repeats': len(accuracy),
+                        'repeats': repeats,
                         'training data': self.data.train_num,
                         'validation data': self.data.val_num,
                         'test data': self.data.test_num,
                         'steps back': self.data.steps_back,
                         'steps forward': self.data.steps_forward,
-                        'batch_size': self.model.batch_size,
-                        'epochs': self.model.epochs,
-                        'neurons': self.model.neurons,
-                        'learning_rate': self.model.learning_rate,
+                        'batch_size': self.batch_size,
+                        'epochs': self.epochs,
+                        'neurons': self.neurons,
+                        'learning_rate': self.learning_rate,
                         }
 
         summary = pd.DataFrame([summary_dict])
-        utils.save_to_csv(f'summary_for_{len(accuracy)}_repeats.csv', summary, self.cwd)
+        utils.save_to_csv(f'summary_for_{repeats}_repeats.csv', summary, self.cwd)
 
-    def predict_values(self, x):
-        x_numpy = x.to_numpy(copy=True)
+    def predict_values(self, data):
+        x_numpy = data.x.to_numpy(copy=True)
         result = self.model.predict(x_numpy)
+        print(result)
         return result
 
 
