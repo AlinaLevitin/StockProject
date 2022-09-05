@@ -74,7 +74,8 @@ class Model:
         """
         return f"neurons: {self.neurons}, epochs: {self.epochs}, learning rate: {self.learning_rate}, batch size: {self.batch_size}"
 
-    def set_model(self, neurons: int, epochs: int, learning_rate: float, batch_size: int):
+    def set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int):
+        self. data = data
         self.neurons = neurons
         self.epochs = epochs
         self.learning_rate = learning_rate
@@ -89,6 +90,8 @@ class Model:
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss='categorical_crossentropy',
                            metrics=['accuracy'])
+        self.model.summary()
+        return self.model
 
     def train_and_test(self, data,  save: bool = False):
         """
@@ -125,7 +128,8 @@ class Model:
 
         if save:
             self.checkpoint_path = self.cwd + "\\training\\cp.ckpt"
-            cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path, save_weights_only=True, verbose=0, period=5)
+            cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path,
+                                                             save_weights_only=True, verbose=1, save_freq='epoch')
             callbacks = [cp_callback]
 
         self.model.fit(self.data.x_train, self.data.y_train,
@@ -141,7 +145,6 @@ class Model:
         return accuracy
 
     def load_callback(self):
-        latest = tf.train.latest_checkpoint(self.checkpoint_path)
         self.model.load_weights(self.checkpoint_path)
 
     def save_model(self, name: str):
@@ -164,8 +167,8 @@ class Model:
         self.batch_size = params['batch_size']
         print(self)
 
-    def repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size):
-        self.set_model(neurons, epochs, learning_rate, batch_size)
+    def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
+        self.set_model(data, neurons, epochs, learning_rate, batch_size)
         acc = []
         for i in range(repeats):
             result = self.train_and_test(self.data)

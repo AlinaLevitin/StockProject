@@ -59,7 +59,8 @@ class Data:
         self.data = None
 
     def __repr__(self):
-        return f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}," \
+        return f"number of data points : {self.data.shape[0]}, " \
+               f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
                f"percent: {self.percent}, interval: {self.interval}"
 
     def read_all_data(self, steps_back: int, steps_forward: int, percent: int, interval: int):
@@ -181,8 +182,10 @@ class Data:
         self.steps_forward = params['steps_forward']
         self.percent = params['percent']
         self.interval = params['interval']
-        print(self)
         self.data = data
+        print(f"number of data points : {self.data.shape[0]}, "
+              f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, "
+              f"percent: {self.percent}, interval: {self.interval}")
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
 
     @staticmethod
