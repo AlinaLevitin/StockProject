@@ -11,12 +11,13 @@ import config
 
 cwd = os.getcwd()
 
-data = DeepLearnig.TrainingData(cwd)
-data.read_all_data(config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT, config.INTERVAL)
-data.save_all_data()
+# data = DeepLearnig.TrainingData(cwd)
+# data.read_all_data(config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT, config.INTERVAL)
+# data.save_all_data('train_data)
 
 
-# data = DeepLearnig.PredictData(cwd)
-# data.read_all_predict_data(config.STEPS_BACK)
+data = DeepLearnig.PredictData(cwd)
+data.read_all_predict_data(config.STEPS_BACK)
+data.save_all_data('pred_data')
 
 

@@ -47,16 +47,23 @@ class PredictData(Data):
         first_symbol = file.split('_')[0]
         second_symbol = file.split('_')[1]
 
-        data_raw = pd.read_csv(file, header=None, names=['time', first_symbol, second_symbol])
+        data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
 
         A_past = data_raw.iloc[-self.steps_back:, 1].to_frame()
         B_past = data_raw.iloc[-self.steps_back:, 2].to_frame()
         df_A = A_past.T
         df_B = B_past.T
         A_len = df_A.shape[1]
-        columns = [f"x({x})" for x in range(A_len)]
-        df_A.columns = columns
-        df_B.columns = columns
-        time_point = pd.concat([df_A, df_B], axis=0, join='outer')
+        B_len = df_B.shape[1]
+        columns_A = [f"A_x({x})" for x in range(A_len)]
+        columns_B = [f"B_x({x})" for x in range(B_len)]
+        df_A.columns = columns_A
+        df_B.columns = columns_B
+        df_B.reset_index(inplace=True)
+        df_A.reset_index(inplace=True)
+        time_point = pd.concat([df_A, df_B], axis=1, join='outer')
+        time_point.drop(labels='index', axis=1, inplace=True)
+        index = pd.Index([first_symbol + ' ' + second_symbol])
+        time_point.set_index(index, inplace=True)
 
         return time_point

@@ -37,8 +37,11 @@ class Model:
 
     Methods
     -------
-    train_and_test(self, data, neurons, epochs, learning_rate, batch_size, save=False)
-        class method to test and train the model according to the chosen hyper parameters
+    set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int)
+        initializing the model with the chosen hyperparameters
+        returns TensorFlow sequential model
+    train_and_test(self, data,  save: bool = False)
+        class method to test and train the model according to the chosen hyperparameters in set_model
         returns accuracy of test
         will save the weights every 5 epochs using the callbacks function
     load_callback(self)
@@ -48,10 +51,14 @@ class Model:
     load_model(self, name: str)
         will load a trained model
     repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size)
-        a class method for optimization of hyper parameters, this will repeat the class method train_and_test
+        for optimization of hyperparameters, this will repeat the class method train_and_test
         and result a summery file
     summary(self, accuracy)
-        a class method to generate a summary file
+        generates a summary file
+    predict_values(self, data)
+        predicting outcomes according to the trained neural network
+        returns a numpy array
+
 
     """
     def __init__(self, cwd: str):
@@ -90,9 +97,9 @@ class Model:
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(4, activation='softmax')])
+            tf.keras.layers.Dense(4, activation='sigmoid')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
-                           loss='categorical_crossentropy',
+                           loss=tf.keras.losses.MeanSquaredError(),
                            metrics=['accuracy'])
         self.model.summary()
         print(self.model)
@@ -103,8 +110,9 @@ class Model:
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
-        :param save:
-        :return:
+        :param save: optional to save callbacks of the neural network
+        :type save: bool optional
+        :return: accuracy of testing data, and a summary file (.csv)
         """
         """
         class method to test and train the model according to the chosen hyper parameters
@@ -150,6 +158,7 @@ class Model:
         return accuracy
 
     def load_callback(self):
+        print('Loading latest callback')
         self.model.load_weights(self.checkpoint_path)
 
     def save_model(self, name: str):
@@ -160,8 +169,10 @@ class Model:
         json_save = json.dumps(params)
         with open(f'params_{name}.json', 'w') as json_file:
             json_file.write(json_save)
+        print(f'model was saved to file: {name}.h5')
 
     def load_model(self, name: str):
+        print(f'Loading model from file: {name}.h5')
         os.chdir(self.cwd)
         self.model = keras.models.load_model(name + '.h5')
         with open(f'params_{name}.json') as json_file:
@@ -207,6 +218,8 @@ class Model:
 
         summary = pd.DataFrame([summary_dict])
         utils.save_to_csv(f'summary_for_{repeats}_repeats.csv', summary, self.cwd)
+        print(summary)
+        print(f'Saved summary to file: summary_for_{repeats}_repeats.csv')
 
     def predict_values(self, data):
         x_numpy = data.x.to_numpy(copy=True)

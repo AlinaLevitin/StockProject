@@ -36,10 +36,10 @@ VALIDATION_DATA = 0.1
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 1
+EPOCHS = 5
 
 # Layer dense:
-NEURONS = 300
+NEURONS = 100
 
 # Learning rate:
-LEARNING_RATE = 10 ** -8
+LEARNING_RATE = 10 ** -5
