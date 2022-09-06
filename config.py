@@ -36,7 +36,7 @@ VALIDATION_DATA = 0.1
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 5
+EPOCHS = 200
 
 # Layer dense:
 NEURONS = 100
