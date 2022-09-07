@@ -39,7 +39,7 @@ BATCH_SIZE = 32
 EPOCHS = 1
 
 # Layer dense:
-NEURONS = 20
+NEURONS = 200
 
 # Learning rate:
 LEARNING_RATE = 10 ** -5

@@ -33,10 +33,9 @@ class PredictData(Data):
             data = self.read_and_get_values(file)
             all_data = pd.concat([all_data, data])
             print(f"analyzed {file}")
-        self.data = all_data
+        self.data = self.scale_data(all_data)
         self.input_shape = self.data.shape[1]
-        print(all_data)
-        return all_data
+        return self.data
 
     def read_and_get_values(self, file):
         """

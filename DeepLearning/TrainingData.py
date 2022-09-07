@@ -103,14 +103,3 @@ class TrainingData(Data):
         print('Data was split')
         print(self)
 
-    @staticmethod
-    def scale_data(df):
-        """
-        to scale the data to range between -1 and 1
-
-        :param df: pandas DataFrame of inputs
-        :return: pandas DataFrame with data ranging between -1 and 1
-        """
-
-        return (df - df.min()) / (df.max() - df.min())
-

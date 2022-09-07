@@ -112,7 +112,7 @@ class Model:
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
-        :param save: optional to save callbacks of the neural network
+        :param save: optional to save callbacks of the neural network, will create new folder in case its missing
         :type save: bool optional
         :return: accuracy of testing data, and a summary file (.csv)
         """
@@ -142,7 +142,6 @@ class Model:
         callbacks = None
 
         if save:
-            self.checkpoint_path = self.cwd + "\\callback\\cp.ckpt"
             cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path,
                                                              save_weights_only=True, verbose=1, save_freq='epoch')
             callbacks = [cp_callback]
@@ -186,19 +185,19 @@ class Model:
         print(f'model was saved to file: {name}.h5')
 
     def load_model(self, name: str):
-        print(f'Loading model from file: {name}.h5')
         os.chdir(self.cwd)
         self.model = keras.models.load_model(name + '.h5')
         with open(f'params_{name}.json') as json_file:
             params = json.load(json_file)
-        if not self.neurons:
+        if not self.neurons and self.neurons == params['neurons']:
             self.neurons = params['neurons']
-        if not self.epochs:
+        if not self.epochs and self.epochs == params['epochs']:
             self.epochs = params['epochs']
-        if not self.learning_rate:
+        if not self.learning_rate and self.learning_rate == params['learning_rate']:
             self.learning_rate = params['learning_rate']
-        if not self.batch_size:
+        if not self.batch_size and self.batch_size == params['batch_size']:
             self.batch_size = params['batch_size']
+        print(f'Loading model from file: {name}.h5')
 
     def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
         self.set_model(data, neurons, epochs, learning_rate, batch_size)
@@ -234,7 +233,7 @@ class Model:
                         }
 
         summary = pd.DataFrame([summary_dict])
-        utils.save_to_csv(f'summary_for_{repeats}_repeats.csv', summary, self.cwd)
+        utils.save_to_csv(f'summary_for_{repeats}_repeats', summary, self.cwd)
         print(summary)
         print(f'Saved summary to file: summary_for_{repeats}_repeats.csv')
 

@@ -26,22 +26,23 @@ def open_data_and_train(from_save=True):
         try:
             model.load_model('trained_neural_network')
         except (Exception,):
-            print('Unable to load trained neural network, training is re-initialized')
-            model.train_and_test(training_data)
+            raise FileNotFoundError('Unable to load trained neural network, please choose from_save=False')
     else:
         try:
             model.set_model(training_data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
             model.load_callback()
         except (Exception,):
+            print('=' * 60)
             print('Unable to load callback, training is re-initialized')
+            print('=' * 60)
 
     print(model)
     try:
         model.train_and_test(training_data)
         model.save_model('trained_neural_network')
     except (Exception,):
-        raise ValueError('Unable to start training'
-                         ', please delete previous callback or trained_neural_network.h5 and retry')
+        raise FileExistsError('Unable to start training'
+                              ', please delete previous callback or trained_neural_network.h5 and retry')
 
 
 def predict_results():
@@ -49,7 +50,6 @@ def predict_results():
     predict_x = predict_data.read_all_predict_data(config.STEPS_BACK)
 
     model = DeepLearning.Model(config.CWD)
-    model.set_model(predict_data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
     model.load_model('trained_neural_network')
     result = model.predict_values(predict_data).round(0)
     predict_y = pd.DataFrame(result, columns=['A_long_(y)', 'B_long_(y)', 'A_short_(y)', 'B_short_(y)'])
@@ -68,4 +68,3 @@ def predict_results():
     predict.reset_index(drop=True, inplace=True)
     utils.save_to_csv('predicted_results', predict, config.CWD)
     print(predict)
-
