@@ -46,7 +46,6 @@ class Data:
 
     def __init__(self, cwd: str):
         """
-
         :param cwd: a string of the working directory
 
         """
@@ -59,6 +58,9 @@ class Data:
         self.data = None
 
     def __repr__(self):
+        """
+        :return: parameters of object number of data points, steps back, steps forward, percent and interval
+        """
         return f"number of data points : {self.data.shape[0]}, " \
                f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
                f"percent: {self.percent}, interval: {self.interval}"
@@ -73,7 +75,6 @@ class Data:
         :param interval: interval between time points collected
 
         :return: pandas DataFrame with the input and targets for deep learning
-
         """
 
         self.steps_back = steps_back
@@ -82,7 +83,8 @@ class Data:
         self.interval = interval
 
         all_data = pd.DataFrame()
-
+        print('=' * 60)
+        print('reading all files in all_hist folder')
         analysis_hist = self.cwd + "\\all_hist"
         files = os.listdir(analysis_hist)
         for file in files:
@@ -91,6 +93,7 @@ class Data:
             all_data = pd.concat([all_data, data])
             print(f"analyzed {file}")
         all_data.reset_index(drop=True, inplace=True)
+        print('=' * 60)
         self.data = all_data
 
     def read_and_get_values(self, file):

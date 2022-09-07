@@ -1,7 +1,6 @@
 """
 Supporting file containing utility functions
 """
-# TODO: document position method
 
 import math
 import pandas as pd
@@ -95,7 +94,13 @@ def copy_to_one_dir(cwd: str):
                 print("copied " + file)
 
 
-def position(long, short):
+def position(long, short) -> int:
+    """
+    method to interpret results predicted from the trained neural network to stockmarket position
+    :param long: predicted result for long position
+    :param short: predicted result for short position
+    :return: 1/0/-1 for (LONG/NO-POSITION/SHORT)
+    """
     if long == 1:
         return 1
     elif short == 1:

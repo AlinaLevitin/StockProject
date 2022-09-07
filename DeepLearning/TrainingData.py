@@ -3,7 +3,6 @@ TrainingData class inherits from Data class to split the data to train, validati
 for deep learning
 """
 from .Data import Data
-
 from sklearn.model_selection import train_test_split
 
 
@@ -19,14 +18,6 @@ class TrainingData(Data):
     ----------
     cwd : str
         a string of the working directory
-    steps_back : int
-        the number of time points in the past
-    steps_forward : int
-        the number of time points in the future
-    percent : int
-        percent as the threshold for win or loss outcome
-    interval : int
-        interval between time points collected
     data : pandas DataFrame
         all the data collected according to the above parameters
         use class method read_all_data with the chosen parameters
@@ -45,16 +36,14 @@ class TrainingData(Data):
         reads the data according to the chosen parameters
     read_and_get_values(self, file)
         reads the data according to the chosen parameters from a chosen file
-    split_data(self):
-        splits the data to train, validation and test data sets randomly
 
+    split_data(self, test: float, validation: float)
+        splits the data to train, validation and test data sets randomly according to the chosen portions
     """
 
     def __init__(self, cwd: str):
         """
-
         :param cwd: a string of the working directory
-
         """
 
         super().__init__(cwd)
@@ -73,12 +62,21 @@ class TrainingData(Data):
         self.input_shape = None
 
     def __repr__(self):
+        """
+        :return: parameters of object training data, validation data and test data
+        """
         return super().__repr__() + f" training data: {self.train_num}, " \
-                               f"validation data: {self.val_num}, " \
-                               f"test data: {self.test_num}"
+                                    f"validation data: {self.val_num}, " \
+                                    f"test data: {self.test_num}"
 
-    def split_data(self, test, validation):
-        """splits the data to train, validation and test data sets randomly"""
+    def split_data(self, test: float, validation: float):
+        """
+        splits the data to train, validation and test data sets randomly according to the chosen portions
+
+        :param test: portion for the test data
+        :param validation: portion of the validation data
+        """
+
         self.x = self.data.iloc[:, :-4]
         self.y = self.data.iloc[:, -4:]
 
@@ -100,6 +98,7 @@ class TrainingData(Data):
         self.val_num = self.x_val.shape[0]
         self.test_num = self.x_test.shape[0]
         self.input_shape = self.x.shape[1]
+        print('=' * 60)
         print('Data was split')
         print(self)
-
+        print('=' * 60)

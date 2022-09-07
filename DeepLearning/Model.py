@@ -1,8 +1,7 @@
 """
 Model class to generate a neural network
-This class allows training, saving, loading, saving and using the model
+This class allows training, saving, loading and using the model to predict results
 """
-# TODO: finish the documentation of Model class
 
 import json
 import shutil
@@ -28,7 +27,7 @@ class Model:
     neurons : int
         the number of neurons in the model
     epochs : int
-        the number of epochs in the model
+        the number of epochs for training
     learning_rate : float
         the learning rate for stochastic gradient descent
     batch_size : int
@@ -65,7 +64,6 @@ class Model:
     """
     def __init__(self, cwd: str):
         """
-
         :param cwd: a string of the working directory
         """
 
@@ -80,12 +78,21 @@ class Model:
 
     def __repr__(self):
         """
-
         :return: number of neurons, number of epochs learning rate and batch size
         """
         return f"neurons: {self.neurons}, epochs: {self.epochs}, learning rate: {self.learning_rate}, batch size: {self.batch_size}"
 
     def set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int):
+        """
+        initializing the model
+
+        :param data: desired training data, must be of TrainingData class
+        :param neurons: the number of neurons in the model
+        :param epochs: the number of epochs for training
+        :param learning_rate: the learning rate for stochastic gradient descent
+        :param batch_size: the batch size for stochastic gradient descent
+        :return: TensorFlow sequential model
+        """
         self. data = data
         self.neurons = neurons
         self.epochs = epochs
@@ -104,11 +111,11 @@ class Model:
                            loss=tf.keras.losses.MeanSquaredError(),
                            metrics=['accuracy'])
         self.model.summary()
-        print(self.model)
         return self.model
 
     def train_and_test(self, data,  save: bool = True):
         """
+        train and test the model
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
@@ -116,27 +123,7 @@ class Model:
         :type save: bool optional
         :return: accuracy of testing data, and a summary file (.csv)
         """
-        """
-        class method to test and train the model according to the chosen hyper parameters
-        returns accuracy of test
-        will save the weights every 5 epochs using the callbacks function
 
-        :param data: TrainingData
-            make sure to split the data using TrainingData class method split_data
-        :param neurons: int
-            the number of neurons in the model
-        :param epochs: int
-            the number of epochs in the model
-        :param learning_rate: float
-             the learning rate for stochastic gradient descent
-        :param batch_size: int
-            the batch size for stochastic gradient descent
-        :param save: boolean optional
-            set as True in to save every 5 epochs
-        :return:
-            accuracy of test
-
-        """
         self.data = data
 
         callbacks = None
@@ -159,22 +146,18 @@ class Model:
         return accuracy
 
     def load_callback(self):
+        """
+        load the latest callback
+        """
         self.model.load_weights(self.checkpoint_path)
         print('Loading latest callback')
 
-    def delete_callbacks(self):
-        folder = self.cwd + "\\callback"
-        for filename in os.listdir(folder):
-            file_path = os.path.join(folder, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
-
     def save_model(self, name: str):
+        """
+        saves the trained neural network as a .h5 file
+
+        :param name: name of the file
+        """
         os.chdir(self.cwd)
         self.model.save(name + '.h5')
         params = {'neurons': self.neurons, 'epochs': self.epochs, 'learning_rate': self.learning_rate,
@@ -185,6 +168,11 @@ class Model:
         print(f'model was saved to file: {name}.h5')
 
     def load_model(self, name: str):
+        """
+        loads the latest saved model
+
+        :param name: name of the file
+        """
         os.chdir(self.cwd)
         self.model = keras.models.load_model(name + '.h5')
         with open(f'params_{name}.json') as json_file:
@@ -200,6 +188,17 @@ class Model:
         print(f'Loading model from file: {name}.h5')
 
     def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
+        """
+        trains the model chosen number of times for hyperparameters optimization
+
+        :param data: TrainingData, make sure to split the data
+        :param repeats: number of training repeats
+        :param neurons: the number of neurons in the model
+        :param epochs: the number of epochs for training
+        :param learning_rate: the learning rate for stochastic gradient descent
+        :param batch_size: the batch size for stochastic gradient descent
+        :return: summary csv file
+        """
         self.set_model(data, neurons, epochs, learning_rate, batch_size)
         acc = []
         for i in range(repeats):
@@ -209,6 +208,11 @@ class Model:
         self.summary(accuracy=acc)
 
     def summary(self, accuracy):
+        """
+        generated a summary csv file
+
+        :param accuracy: float or list of accuracy after training
+        """
 
         if isinstance(accuracy, list):
             repeats = len(accuracy)
@@ -238,9 +242,11 @@ class Model:
         print(f'Saved summary to file: summary_for_{repeats}_repeats.csv')
 
     def predict_values(self, data):
+        """
+        predicting results
+
+        :param data: PredictData
+        :return: numpy array of the predicted results
+        """
         data = data.pandas_to_numpy()
         return self.model.predict(data)
-
-
-
-
