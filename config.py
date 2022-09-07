@@ -6,8 +6,16 @@ import os
 CWD = os.getcwd()
 
 # --------------------------------------------------------------
+"""
+Configuration parameters for collecting training data for training the neural network:
 
-# Configuration parameters for collecting data for DL:
+If you change any of these parameters you need to read data again and re-train the model
+
+1. make desired changes
+2. use DeepLearning.NeuralNetwork_API.read_data_for_training(copy=True)
+3. delete callback folder and trained_neural_network.h5 file
+4. use DeepLearning.NeuralNetwork_API.open_data_and_train(from_save=False)
+"""
 
 # time points before maximum difference
 STEPS_BACK = 21
@@ -22,6 +30,15 @@ PERCENT = 1
 INTERVAL = 10
 
 # --------------------------------------------------------------
+"""
+Configuration for training data portion split
+
+If you change any of these parameters you need to re-train the model
+
+1. make desired changes
+2. delete callback folder and trained_neural_network.h5 file
+3. use DeepLearning.NeuralNetwork_API.open_data_and_train(from_save=False)
+"""
 # Training data split
 
 TEST_DATA = 0.2
@@ -29,8 +46,15 @@ TEST_DATA = 0.2
 VALIDATION_DATA = 0.1
 
 # --------------------------------------------------------------
+"""
+Configuration for training neural network:
 
-# Configuration for training data:
+If you change any of these parameters you need to re-train the model
+
+1. make desired changes
+2. delete callback folder and trained_neural_network.h5 file
+3. use DeepLearning.NeuralNetwork_API.open_data_and_train(from_save=False)
+"""
 
 # Batch size:
 BATCH_SIZE = 32
