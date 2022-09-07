@@ -9,6 +9,7 @@ import tensorflow as tf
 import pandas as pd
 import os
 import utils
+from DeepLearning import dl_utils
 
 
 class Model:
@@ -217,8 +218,8 @@ class Model:
         else:
             repeats = 1
 
-        accuracy_average = utils.average(accuracy)
-        stddev = utils.stddev(accuracy)
+        accuracy_average = dl_utils.average(accuracy)
+        stddev = dl_utils.stddev(accuracy)
 
         summary_dict = {'average accuracy': accuracy_average,
                         'STDEV': stddev,

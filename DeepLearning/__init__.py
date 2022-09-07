@@ -7,3 +7,4 @@ from .data import Data
 from .neural_network_api import open_data_and_train
 from .neural_network_api import predict_results
 from .predict_data import PredictData
+import dl_utils

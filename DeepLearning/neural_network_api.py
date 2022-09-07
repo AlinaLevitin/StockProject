@@ -5,6 +5,7 @@ import DeepLearning
 import config
 import pandas as pd
 import utils
+from DeepLearning import dl_utils
 
 
 def read_data_for_training(copy=False):
@@ -87,11 +88,11 @@ def predict_results():
     for index, row in predict_y.iterrows():
         A = str(index).split(" ")[0]
         B = str(index).split(" ")[1]
-        new_row = pd.DataFrame({'symbol': A, 'position': utils.position(row['A_long_(y)'],
-                                                                        row['A_short_(y)'])}, index=[0])
+        new_row = pd.DataFrame({'symbol': A, 'position': dl_utils.position(row['A_long_(y)'],
+                                                                           row['A_short_(y)'])}, index=[0])
         predict = pd.concat([predict, new_row])
-        new_row = pd.DataFrame({'symbol': B, 'position': utils.position(row['B_long_(y)'],
-                                                                        row['B_short_(y)'])}, index=[0])
+        new_row = pd.DataFrame({'symbol': B, 'position': dl_utils.position(row['B_long_(y)'],
+                                                                           row['B_short_(y)'])}, index=[0])
         predict = pd.concat([predict, new_row])
     predict.reset_index(drop=True, inplace=True)
     utils.save_to_csv('predicted_results', predict, config.CWD)
