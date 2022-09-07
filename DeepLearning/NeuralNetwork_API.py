@@ -1,4 +1,3 @@
-# TODO: document the methods
 """
 API to read the data, train the neural network and predict results
 """
