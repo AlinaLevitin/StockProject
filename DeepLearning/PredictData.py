@@ -9,7 +9,8 @@ class PredictData(Data):
 
     def __init__(self, cwd: str):
         super().__init__(cwd)
-        self.x = None
+        self.data = None
+        self.input_shape = None
 
     def read_all_predict_data(self, steps_back: int):
         """
@@ -32,8 +33,10 @@ class PredictData(Data):
             data = self.read_and_get_values(file)
             all_data = pd.concat([all_data, data])
             print(f"analyzed {file}")
-        self.x = all_data
+        self.data = all_data
+        self.input_shape = self.data.shape[1]
         print(all_data)
+        return all_data
 
     def read_and_get_values(self, file):
         """
@@ -68,3 +71,6 @@ class PredictData(Data):
         time_point.set_index(index, inplace=True)
 
         return time_point
+
+    def pandas_to_numpy(self):
+        return self.data.to_numpy(copy=True)

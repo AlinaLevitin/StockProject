@@ -70,6 +70,7 @@ class TrainingData(Data):
         self.train_num = None
         self.val_num = None
         self.test_num = None
+        self.input_shape = None
 
     def __repr__(self):
         return super().__repr__() + f" training data: {self.train_num}, " \
@@ -98,6 +99,7 @@ class TrainingData(Data):
         self.train_num = self.x_train.shape[0]
         self.val_num = self.x_val.shape[0]
         self.test_num = self.x_test.shape[0]
+        self.input_shape = self.x.shape[1]
         print('Data was split')
         print(self)
 

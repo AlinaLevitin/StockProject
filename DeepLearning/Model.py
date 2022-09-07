@@ -5,6 +5,8 @@ This class allows training, saving, loading, saving and using the model
 # TODO: finish the documentation of Model class
 
 import json
+import shutil
+
 import keras
 import tensorflow as tf
 import pandas as pd
@@ -68,7 +70,7 @@ class Model:
         """
 
         self.cwd = cwd
-        self.checkpoint_path = self.cwd + "\\training\\cp.ckpt"
+        self.checkpoint_path = self.cwd + "\\callback\\cp.ckpt"
         self.data = None
         self.neurons = None
         self.epochs = None
@@ -90,7 +92,7 @@ class Model:
         self.learning_rate = learning_rate
         self.batch_size = batch_size
 
-        input_shape = self.data.x.shape[1]
+        input_shape = self.data.input_shape
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
@@ -105,7 +107,7 @@ class Model:
         print(self.model)
         return self.model
 
-    def train_and_test(self, data,  save: bool = False):
+    def train_and_test(self, data,  save: bool = True):
         """
 
         :param data: make sure to split the data using TrainingData class method split_data
@@ -140,7 +142,7 @@ class Model:
         callbacks = None
 
         if save:
-            self.checkpoint_path = self.cwd + "\\training\\cp.ckpt"
+            self.checkpoint_path = self.cwd + "\\callback\\cp.ckpt"
             cp_callback = tf.keras.callbacks.ModelCheckpoint(self.checkpoint_path,
                                                              save_weights_only=True, verbose=1, save_freq='epoch')
             callbacks = [cp_callback]
@@ -158,8 +160,20 @@ class Model:
         return accuracy
 
     def load_callback(self):
-        print('Loading latest callback')
         self.model.load_weights(self.checkpoint_path)
+        print('Loading latest callback')
+
+    def delete_callbacks(self):
+        folder = self.cwd + "\\callback"
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
     def save_model(self, name: str):
         os.chdir(self.cwd)
@@ -177,11 +191,14 @@ class Model:
         self.model = keras.models.load_model(name + '.h5')
         with open(f'params_{name}.json') as json_file:
             params = json.load(json_file)
-        self.neurons = params['neurons']
-        self.epochs = params['epochs']
-        self.learning_rate = params['learning_rate']
-        self.batch_size = params['batch_size']
-        print(self)
+        if not self.neurons:
+            self.neurons = params['neurons']
+        if not self.epochs:
+            self.epochs = params['epochs']
+        if not self.learning_rate:
+            self.learning_rate = params['learning_rate']
+        if not self.batch_size:
+            self.batch_size = params['batch_size']
 
     def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
         self.set_model(data, neurons, epochs, learning_rate, batch_size)
@@ -222,10 +239,8 @@ class Model:
         print(f'Saved summary to file: summary_for_{repeats}_repeats.csv')
 
     def predict_values(self, data):
-        x_numpy = data.x.to_numpy(copy=True)
-        result = self.model.predict(x_numpy)
-        print(result)
-        return result
+        data = data.pandas_to_numpy()
+        return self.model.predict(data)
 
 
 

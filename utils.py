@@ -1,6 +1,8 @@
 """
 Supporting file containing utility functions
 """
+# TODO: document position method
+
 import math
 import pandas as pd
 import os
@@ -32,7 +34,7 @@ def save_to_csv(name: str, data, cwd: str):
     :return: saves the data to csv file
     """
     os.chdir(cwd)
-    data.to_csv(name, index=False)
+    data.to_csv(name + '.csv', index=False)
 
 
 def average(num: list) -> float:
@@ -91,3 +93,12 @@ def copy_to_one_dir(cwd: str):
             for file in files:
                 shutil.copy(symbol + "\\" + file, cwd + "\\all_hist\\" + file)
                 print("copied " + file)
+
+
+def position(long, short):
+    if long == 1:
+        return 1
+    elif short == 1:
+        return -1
+    elif long == 0 and short == 0:
+        return 0
