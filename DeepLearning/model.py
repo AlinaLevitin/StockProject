@@ -176,13 +176,13 @@ class Model:
         self.model = keras.models.load_model(name + '.h5')
         with open(f'params_{name}.json') as json_file:
             params = json.load(json_file)
-        if not self.neurons and self.neurons == params['neurons']:
+        if not self.neurons or self.neurons == params['neurons']:
             self.neurons = params['neurons']
-        if not self.epochs and self.epochs == params['epochs']:
+        if not self.epochs or self.epochs == params['epochs']:
             self.epochs = params['epochs']
-        if not self.learning_rate and self.learning_rate == params['learning_rate']:
+        if not self.learning_rate or self.learning_rate == params['learning_rate']:
             self.learning_rate = params['learning_rate']
-        if not self.batch_size and self.batch_size == params['batch_size']:
+        if not self.batch_size or self.batch_size == params['batch_size']:
             self.batch_size = params['batch_size']
         print(f'Loading model from file: {name}.h5')
 

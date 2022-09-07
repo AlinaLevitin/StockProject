@@ -40,6 +40,7 @@ def open_data_and_train(from_save=True):
     training_data.split_data(config.TEST_DATA, config.VALIDATION_DATA)
 
     model = DeepLearning.Model(config.CWD)
+    model.set_model(training_data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
 
     if from_save:
         try:
@@ -51,7 +52,6 @@ def open_data_and_train(from_save=True):
     else:
         try:
             print('=' * 60)
-            model.set_model(training_data, config.NEURONS, config.EPOCHS, config.LEARNING_RATE, config.BATCH_SIZE)
             model.load_callback()
             print('=' * 60)
         except (Exception,):

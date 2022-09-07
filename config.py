@@ -66,4 +66,4 @@ EPOCHS = 200
 NEURONS = 200
 
 # Learning rate:
-LEARNING_RATE = 10 ** -5
+LEARNING_RATE = 10 ** -6
