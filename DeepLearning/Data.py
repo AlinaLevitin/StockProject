@@ -191,10 +191,9 @@ class Data:
               f"percent: {self.percent}, interval: {self.interval}")
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
 
-    @staticmethod
-    def long(future, symbol: str, one_percent: float) -> int:
+    def long(self, future, symbol: str, one_percent: float) -> int:
         """
-        static method to check for win or loss in long position
+        method to check for win or loss in long position
 
         :param future: pandas DataFrame of the future according to the steps forward
         :type future: pandas DataFrame
@@ -210,8 +209,8 @@ class Data:
             col = 2
 
         time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + one_percent
-        mask2 = future.iloc[:, col] < time_0 - one_percent
+        mask1 = future.iloc[:, col] > time_0 + self.percent*one_percent
+        mask2 = future.iloc[:, col] < time_0 - self.percent*one_percent
 
         plus = future.loc[mask1, symbol]
         minus = future.loc[mask2, symbol]
@@ -221,10 +220,9 @@ class Data:
         else:
             return 0
 
-    @staticmethod
-    def short(future, symbol: str, one_percent: float) -> int:
+    def short(self, future, symbol: str, one_percent: float) -> int:
         """
-        static method to check for win or loss in short position
+        method to check for win or loss in short position
 
         :param future: pandas DataFrame of the future according to the steps forward
         :type future: pandas DataFrame
@@ -240,8 +238,8 @@ class Data:
             col = 2
 
         time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + one_percent
-        mask2 = future.iloc[:, col] < time_0 - one_percent
+        mask1 = future.iloc[:, col] > time_0 + self.percent*one_percent
+        mask2 = future.iloc[:, col] < time_0 - self.percent*one_percent
 
         plus = future.loc[mask1, symbol]
         minus = future.loc[mask2, symbol]
