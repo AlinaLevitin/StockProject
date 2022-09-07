@@ -47,7 +47,6 @@ class Data:
     def __init__(self, cwd: str):
         """
         :param cwd: a string of the working directory
-
         """
 
         self.cwd = cwd

@@ -2,7 +2,7 @@
 TrainingData class inherits from Data class to split the data to train, validation and test
 for deep learning
 """
-from .Data import Data
+from .data import Data
 from sklearn.model_selection import train_test_split
 
 

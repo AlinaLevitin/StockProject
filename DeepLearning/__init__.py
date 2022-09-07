@@ -1,9 +1,9 @@
 """
 DeepLearning API for data processing, training and using the neural network
 """
-from .TrainingData import TrainingData
-from .Model import Model
-from .Data import Data
-from .NeuralNetwork_API import open_data_and_train
-from .NeuralNetwork_API import predict_results
-from .PredictData import PredictData
+from .training_data import TrainingData
+from .model import Model
+from .data import Data
+from .neural_network_api import open_data_and_train
+from .neural_network_api import predict_results
+from .predict_data import PredictData

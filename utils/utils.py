@@ -12,7 +12,6 @@ import shutil
 def open_csv(cwd: str, file_name: str):
     """
     open a csv using pandas
-
     :param cwd: current working directory using cwd = os.getcwd()
     :param file_name: the name of the file
     :return: DataFrame
@@ -25,7 +24,6 @@ def open_csv(cwd: str, file_name: str):
 def save_to_csv(name: str, data, cwd: str):
     """
     save to csv file using pandas
-
     :param name: name for the file
     :param data: the data to save in a form of pandas DataFrame
     :type data: pandas DataFrame
@@ -36,7 +34,7 @@ def save_to_csv(name: str, data, cwd: str):
     data.to_csv(name + '.csv', index=False)
 
 
-def average(num: list) -> float:
+def average(num: list):
     """
     calculates the average of numbers in a list
     :param num: list of numbers

@@ -4,13 +4,10 @@ This class allows training, saving, loading and using the model to predict resul
 """
 
 import json
-import shutil
-
 import keras
 import tensorflow as tf
 import pandas as pd
 import os
-
 import utils
 
 
@@ -80,7 +77,8 @@ class Model:
         """
         :return: number of neurons, number of epochs learning rate and batch size
         """
-        return f"neurons: {self.neurons}, epochs: {self.epochs}, learning rate: {self.learning_rate}, batch size: {self.batch_size}"
+        return f"neurons: {self.neurons}, epochs: {self.epochs}," \
+               f"learning rate: {self.learning_rate}, batch size: {self.batch_size} "
 
     def set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int):
         """

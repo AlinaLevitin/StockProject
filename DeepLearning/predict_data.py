@@ -1,7 +1,7 @@
 """
 PredictData class inherits from Data class to predict results according to a trained neural network
 """
-from .Data import Data
+from .data import Data
 import pandas as pd
 import os
 
