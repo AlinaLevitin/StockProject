@@ -69,8 +69,8 @@ def open_data_and_train(from_save=True):
 
 def predict_results():
     """
-    Use this to predict results (make sure to copy all desired csv files in predict_data folder)
-    This will generate a predicted_results.csv file
+    Use this to predict results (make sure to copy all desired csv files to predict_data folder)
+    This will generate a predicted_results.csv file with symbol and suggested position 1/0/-1 for LONG/NO-POSITION/SHORT
     """
     predict_data = DeepLearning.PredictData(config.CWD)
     predict_x = predict_data.read_all_predict_data(config.STEPS_BACK)
