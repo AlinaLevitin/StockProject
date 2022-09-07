@@ -28,4 +28,4 @@ I decided to use "Adam" gradient descent since I wanted the best optimizer using
 Next, the model was optimized by "for looping" and changing the hyperparameters: learning rate, number of epochs, number of neurons in the deep learning layers and batch-size for stochastic gradient descent.
 
 Finally, the best hyperparameters were used to generate the final model and the model was trained on the full set or training data (2m data-points).
-The API I created for S.G enables to read training data, train the model and save it, and predict stockmarket positions based on the trained neaural network.
+The API I created for S.G enables to read training data, train the model and save it, and suggest stockmarket positions based on the trained neaural network.
