@@ -60,7 +60,7 @@ If you change any of these parameters you need to re-train the model
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 1
+EPOCHS = 200
 
 # Layer dense:
 NEURONS = 200

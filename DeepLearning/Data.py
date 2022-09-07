@@ -65,7 +65,7 @@ class Data:
                f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
                f"percent: {self.percent}, interval: {self.interval}"
 
-    def read_all_data(self, steps_back: int, steps_forward: int, percent: int, interval: int):
+    def read_all_data(self, steps_back: int, steps_forward: int, percent: float, interval: int):
         """
         reads the data according to the chosen parameters
 
@@ -200,7 +200,7 @@ class Data:
         :param symbol: 'A' or 'B'
         :param one_percent: float
 
-        :return: bool
+        :return: int
         """
 
         if symbol == 'A':
@@ -229,7 +229,7 @@ class Data:
         :param symbol: 'A' or 'B'
         :param one_percent: float
 
-        :return: bool
+        :return: int
         """
 
         if symbol == 'A':
