@@ -22,10 +22,11 @@ Since a good portion of the input data is in the negative range, I wanted the fi
 Other options included "leaky relu", and "elu". However, I didn't want the model to have negative bias on the negative numbers inputs.
 Using an activation function as "Maxout" or "relu" would "kill" neurons with negative values.
 The next four layers were decided by trial and error.
+The final layer is not "softmax" since this is not a classification model. I wanted the output to be probability to win on long and short possitions. Therefore, I used sigmoid activation function as the last layer.
 
 I decided to use "Adam" gradient descent since I wanted the best optimizer using a dynamic learning rate and momentum during the gradient descent.
 
 Next, the model was optimized by "for looping" and changing the hyperparameters: learning rate, number of epochs, number of neurons in the deep learning layers and batch-size for stochastic gradient descent.
 
-Finally, the best hyperparameters were used to generate the final model and the model was trained on the full set or training data (2m data-points).
+Finally, the best hyperparameters were used to generate the final model and the model was trained on the full set of training data (2m data-points).
 The API I created for S.G enables to read training data, train the model and save it, and suggest stockmarket positions based on the trained neaural network.
