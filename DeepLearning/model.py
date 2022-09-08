@@ -109,7 +109,6 @@ class Model:
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss=tf.keras.losses.MeanSquaredError(),
                            metrics=['accuracy'])
-        self.model.summary()
         return self.model
 
     def train_and_test(self, data,  save: bool = True):
@@ -148,6 +147,7 @@ class Model:
         """
         load the latest callback
         """
+        self.model.summary()
         self.model.load_weights(self.checkpoint_path)
         print('Loading latest callback')
 
@@ -159,11 +159,6 @@ class Model:
         """
         os.chdir(self.cwd)
         self.model.save(name + '.h5')
-        params = {'neurons': self.neurons, 'epochs': self.epochs, 'learning_rate': self.learning_rate,
-                  'batch_size': self.batch_size}
-        json_save = json.dumps(params)
-        with open(f'params_{name}.json', 'w') as json_file:
-            json_file.write(json_save)
         print(f'model was saved to file: {name}.h5')
 
     def load_model(self, name: str):
@@ -174,16 +169,13 @@ class Model:
         """
         os.chdir(self.cwd)
         self.model = keras.models.load_model(name + '.h5')
-        with open(f'params_{name}.json') as json_file:
-            params = json.load(json_file)
-        if not self.neurons or self.neurons == params['neurons']:
-            self.neurons = params['neurons']
-        if not self.epochs or self.epochs == params['epochs']:
-            self.epochs = params['epochs']
-        if not self.learning_rate or self.learning_rate == params['learning_rate']:
-            self.learning_rate = params['learning_rate']
-        if not self.batch_size or self.batch_size == params['batch_size']:
-            self.batch_size = params['batch_size']
+        self.model.summary()
+        loaded_model_neurons = self.model.get_layer('dense').output_shape[1]
+        if not self.neurons or self.neurons == loaded_model_neurons:
+            self.neurons = loaded_model_neurons
+        else:
+            raise ValueError("number of neurons in the load_model and set_model don't match,"
+                  "if you want to change the number of neurons please delete old trained_neural_network.h5 file")
         print(f'Loading model from file: {name}.h5')
 
     def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
