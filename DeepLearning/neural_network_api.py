@@ -27,6 +27,7 @@ def read_data_for_training(copy=False):
 def open_data_and_train(from_save=True):
     """
     Use this to train the neural network either from a callback or saved trained neural network.
+    Training data should be saved to data.csv file
     * choose from_save=True to continue training from trained_neural_network.h5 file.
     * choose from_save=False to train from a callback or create a new neural network (make sure to delete previous
     callbacks and trained_neural_network.h5).

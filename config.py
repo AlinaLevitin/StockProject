@@ -60,10 +60,16 @@ If you change any of these parameters you need to re-train the model
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 200
+EPOCHS = 1
 
 # Layer dense:
 NEURONS = 200
-
+"""
+Changing the neurons will affect the architecture of the model, therefore, please delete old callback folder
+and trained_neural_network.h5 file before training the model
+"""
 # Learning rate:
-LEARNING_RATE = 10 ** -6
+LEARNING_RATE = 10 ** -5
+"""
+Changing the learning rate will restart the optimizer but training can be resumed
+"""
