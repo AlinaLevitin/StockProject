@@ -50,7 +50,8 @@ def open_data_and_train(from_save=True):
             print('=' * 60)
         except (Exception,):
             raise FileNotFoundError('Unable to load trained neural network,'
-                                    'please please delete previous callback or trained_neural_network.h5 and choose from_save=False')
+                                    'please please delete previous callback or trained_neural_network.h5'
+                                    'and choose from_save=False')
     else:
         try:
             print('=' * 60)

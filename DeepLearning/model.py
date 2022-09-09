@@ -3,7 +3,7 @@ Model class to generate a neural network
 This class allows training, saving, loading and using the model to predict results
 """
 
-import json
+import time
 import keras
 import tensorflow as tf
 import pandas as pd
@@ -226,11 +226,12 @@ class Model:
                         'neurons': self.neurons,
                         'learning_rate': self.learning_rate,
                         }
-
+        gmt = time.gmtime()
         summary = pd.DataFrame([summary_dict])
-        utils.save_to_csv(f'summary_for_{repeats}_repeats', summary, self.cwd)
+        utils.save_to_csv(f'summary_for_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
+                          self.cwd)
         print(summary)
-        print(f'Saved summary to file: summary_for_{repeats}_repeats.csv')
+        print(f'Saved summary to file: summary_for_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
 
     def predict_values(self, data):
         """

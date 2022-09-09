@@ -77,8 +77,8 @@ Feel free to change batch size and epochs as needed
 BATCH_SIZE = 32
 
 # Number of epochs:
-EPOCHS = 1
+EPOCHS = 200
 
 # Learning rate:
-LEARNING_RATE = 10 ** -4
+LEARNING_RATE = 10 ** -3
 
