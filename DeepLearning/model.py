@@ -107,7 +107,7 @@ class Model:
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(4, activation='sigmoid')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
-                           loss=tf.keras.losses.MeanSquaredError(),
+                           loss=tf.keras.losses.BinaryCrossentropy(),
                            metrics=['accuracy'])
         return self.model
 
@@ -228,10 +228,10 @@ class Model:
                         }
         gmt = time.gmtime()
         summary = pd.DataFrame([summary_dict])
-        utils.save_to_csv(f'summary_for_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
+        utils.save_to_csv(f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
                           self.cwd)
         print(summary)
-        print(f'Saved summary to file: summary_for_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
+        print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
 
     def predict_values(self, data):
         """
