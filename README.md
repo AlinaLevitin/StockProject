@@ -22,9 +22,9 @@ Since a good portion of the input data is in the negative range, I wanted the fi
 Other options included "leaky relu", and "elu". However, I didn't want the model to have negative bias on the negative numbers inputs.
 Using an activation function as "Maxout" or "relu" would "kill" neurons with negative values.
 The next four layers were decided by trial and error.
-The final layer is not "softmax" since this is not a classification model. I wanted the output to be probability to win on long and short possitions. Therefore, I used sigmoid activation function as the last layer.
+The final layer is not "sigmoid" since this is not a classification model. I wanted the output to be probability to win on long and short possitions. Therefore, I used sigmoid activation function as the last layer.
 
-I decided to use "Adam" gradient descent since I wanted the best optimizer using a dynamic learning rate and momentum during the gradient descent.
+I decided to use "Adam" gradient descent since I wanted the best optimizer using a dynamic learning rate and momentum during the gradient descent and I used binary cross-entropy loss function since my outputs are either 1 or 0 (probability to win)
 
 Next, the model was optimized by "for looping" and changing the hyperparameters: learning rate, number of epochs, number of neurons in the deep learning layers and batch-size for stochastic gradient descent.
 
