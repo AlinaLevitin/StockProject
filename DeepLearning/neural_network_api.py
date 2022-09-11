@@ -6,6 +6,7 @@ import config
 import pandas as pd
 import utils
 from DeepLearning import dl_utils
+import time
 
 
 def read_data_for_training(copy=False):
@@ -22,6 +23,29 @@ def read_data_for_training(copy=False):
     data = DeepLearning.TrainingData(config.CWD)
     data.read_all_data(config.STEPS_BACK, config.STEPS_FORWARD, config.PERCENT, config.INTERVAL)
     data.save_all_data('train_data')
+
+
+def model_opt():
+    training_data = DeepLearning.TrainingData(config.CWD)
+    training_data.open_all_data()
+    training_data.reduce_data(0.2)
+    training_data.split_data(config.TEST_DATA, config.VALIDATION_DATA)
+
+    REPEATS = 10
+
+    all_summary = pd.DataFrame()
+
+    for i in range(1, 5):
+        model = DeepLearning.Model(config.CWD)
+        neurons = 50 * i
+        result = model.repeat_train(training_data, REPEATS,  neurons, config.EPOCHS, config.LEARNING_RATE,
+                                    config.BATCH_SIZE)
+        all_summary = pd.concat([all_summary, result])
+
+    gmt = time.gmtime()
+    utils.save_to_csv(f'repeat_summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', all_summary,
+                      config.CWD + "\\model_opt")
+    print(all_summary)
 
 
 def open_data_and_train(from_save=True):

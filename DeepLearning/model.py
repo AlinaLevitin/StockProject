@@ -3,6 +3,7 @@ Model class to generate a neural network
 This class allows training, saving, loading and using the model to predict results
 """
 
+import csv
 import time
 import keras
 import tensorflow as tf
@@ -111,10 +112,11 @@ class Model:
                            metrics=['accuracy'])
         return self.model
 
-    def train_and_test(self, data,  save: bool = True):
+    def train_and_test(self, data,  save: bool = True, get_summary : bool =True):
         """
         train and test the model
 
+        :param get_summary: bool optional, default will save a summary file
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
         :param save: optional to save callbacks of the neural network, will create new folder in case its missing
@@ -131,16 +133,27 @@ class Model:
                                                              save_weights_only=True, verbose=1, save_freq='epoch')
             callbacks = [cp_callback]
 
-        self.model.fit(self.data.x_train, self.data.y_train,
+        history = self.model.fit(self.data.x_train, self.data.y_train,
                        epochs=self.epochs,
                        validation_data=(self.data.x_val, self.data.y_val),
                        batch_size=self.batch_size, callbacks=callbacks,
                        verbose=1
                        )
+        epochs = [i for i in range(1, self.epochs+1)]
+        acc = history.history['accuracy']
+        val_acc = history.history['val_accuracy']
+        loss = history.history['loss']
+        val_loss = history.history['val_loss']
+
+        acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy' : val_acc, 'validation_loss': val_loss}
+        acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
+        gmt = time.gmtime()
+        utils.save_to_csv(f'acc_and_loss_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', acc_and_loss_df, self.cwd + "\\model_opt\\reports")
 
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
         accuracy = result[1]
-        self.summary(accuracy)
+        if get_summary:
+            print(self.summary(accuracy, save=get_summary))
         return accuracy
 
     def load_callback(self):
@@ -190,18 +203,31 @@ class Model:
         :param batch_size: the batch size for stochastic gradient descent
         :return: summary csv file
         """
-        self.set_model(data, neurons, epochs, learning_rate, batch_size)
+        model = self.set_model(data, neurons, epochs, learning_rate, batch_size)
+        model.summary()
+        os.chdir(self.cwd + "\\model_opt")
+        model.save_weights('model.h5')
         acc = []
         for i in range(repeats):
-            result = self.train_and_test(self.data)
+            print('='*60)
+            print(f'Repeat #{i+1}')
+            print('=' * 60)
+            os.chdir(self.cwd + "\\model_opt")
+            model.load_weights('model.h5')
+            result = self.train_and_test(self.data, save=False, get_summary=False)
             acc.append(result)
+        report = self.summary(accuracy=acc, save=False)
+        print('=' * 60)
+        print(report)
+        print('=' * 60)
+        return report
 
-        self.summary(accuracy=acc)
 
-    def summary(self, accuracy):
+    def summary(self, accuracy, save=True):
         """
         generated a summary csv file
 
+        :param save: bool optional, default save=True will save the summary to csv, otherwise will not save.
         :param accuracy: float or list of accuracy after training
         """
 
@@ -228,10 +254,11 @@ class Model:
                         }
         gmt = time.gmtime()
         summary = pd.DataFrame([summary_dict])
-        utils.save_to_csv(f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
-                          self.cwd)
-        print(summary)
-        print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
+        if save:
+            utils.save_to_csv(f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
+                          self.cwd + "\\reports")
+            print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
+        return summary
 
     def predict_values(self, data):
         """

@@ -11,7 +11,9 @@ for more efficient data reading (do this once then change to copy=False)
 this will create a data.csv file with all the data for training.
 """
 
-DeepLearning.neural_network_api.open_data_and_train(from_save=False)
+DeepLearning.neural_network_api.model_opt()
+
+# DeepLearning.neural_network_api.open_data_and_train(from_save=False)
 """
 Use this to train the neural network either from a callback or saved trained neural network.
 * choose from_save=True to continue training from trained_neural_network.h5 file.
