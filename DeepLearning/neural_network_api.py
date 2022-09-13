@@ -52,7 +52,7 @@ def model_opt():
     print("=" * 60)
     for i in range(1, 5):
         model = DeepLearning.Model(config.CWD)
-        neurons = 100 * i
+        neurons = 300 * i
         result = model.repeat_train(training_data, REPEATS,  neurons, config.EPOCHS, config.LEARNING_RATE,
                                     config.BATCH_SIZE)
         all_summary = pd.concat([all_summary, result])
