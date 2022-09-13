@@ -205,6 +205,7 @@ class Model:
             raise ValueError("number of neurons in the load_model and set_model don't match,"
                   "if you want to change the number of neurons please delete old trained_neural_network.h5 file")
         print(f'Loading model from file: {name}.h5')
+        print('-' * 60)
 
     def repeat_train(self, data, repeats, neurons, epochs, learning_rate, batch_size):
         """
@@ -234,19 +235,20 @@ class Model:
             acc.append(result[0])
             acc_and_loss_df = result[1]
             gmt = time.gmtime()
+            acc_and_loss_file = f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
             os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}", exist_ok=True)
-            utils.save_to_csv(f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', acc_and_loss_df,
+            utils.save_to_csv(f'{acc_and_loss_file}', acc_and_loss_df,
                               self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}")
-            print(f'file saved to acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
+            print(f'file saved to {acc_and_loss_file}.csv'
                   f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons}/repeat_train{i+1} folder')
         gmt = time.gmtime()
         report = self.summary(accuracy=acc, save=False)
+        report_file = f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
         print('-' * 60)
         os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}", exist_ok=True)
-        utils.save_to_csv(f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', report,
+        utils.save_to_csv(f'{report_file}', report,
                           self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}")
-        print(f'file saved to summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
-              f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
+        print(f'file saved to {report_file}.csv in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
         print(report)
         print('-' * 60)
         return report
@@ -284,11 +286,11 @@ class Model:
         gmt = time.gmtime()
         summary = pd.DataFrame([summary_dict])
         if save:
+            summary_file = f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
             os.makedirs(self.cwd + "\\reports", exist_ok=True)
-            utils.save_to_csv(f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
+            utils.save_to_csv(f'{summary_file}', summary,
                           self.cwd + "\\reports")
-            print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
-                  f'in {self.cwd + "/reports"}')
+            print(f'Saved summary to file: {summary_file}.csv in {self.cwd + "/reports"}')
         return summary
 
     def predict_values(self, data):

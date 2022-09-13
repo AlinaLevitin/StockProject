@@ -58,9 +58,12 @@ def model_opt():
         all_summary = pd.concat([all_summary, result])
 
     gmt = time.gmtime()
+    all_summary_file = f'repeat_summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
     os.makedirs(config.CWD + "\\model_opt", exist_ok=True)
-    utils.save_to_csv(f'repeat_summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', all_summary,
+    utils.save_to_csv(f'{all_summary_file}', all_summary,
                       config.CWD + "\\model_opt")
+    pront(f'repeat summary was saved to file: {all_summary_file}.csv in model_opt folder')
+    print("=" * 60)
     print(all_summary)
 
 
