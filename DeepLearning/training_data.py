@@ -99,10 +99,10 @@ class TrainingData(Data):
         self.val_num = self.x_val.shape[0]
         self.test_num = self.x_test.shape[0]
         self.input_shape = self.x.shape[1]
-        print('=' * 60)
+        print('-' * 60)
         print('Data was split')
         print(self)
-        print('=' * 60)
+        print('-' * 60)
 
     def reduce_data(self, portion):
         remove_n = int(self.data.shape[0]*(1-portion))

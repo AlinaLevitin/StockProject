@@ -12,6 +12,10 @@ this will create a data.csv file with all the data for training.
 """
 
 DeepLearning.neural_network_api.model_opt()
+"""
+Use this to optimize the neural network with reduced data volume to 20%.
+Optimize layers, activation functions and number or neuron
+"""
 
 # DeepLearning.neural_network_api.open_data_and_train(from_save=False)
 """

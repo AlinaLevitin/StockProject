@@ -41,6 +41,7 @@ def copy_to_one_dir(cwd: str):
     """
     analysis_hist = glob.glob(cwd + "\\analysis_hist")
     date_folders = glob.glob(analysis_hist[0] + "\\*")
+    os.makedirs(cwd + "\\all_hist", exist_ok=True)
     for date in date_folders:
         symbol_folders = glob.glob(date + "\\*")
         for symbol in symbol_folders:

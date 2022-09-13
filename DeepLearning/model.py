@@ -103,12 +103,14 @@ class Model:
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
-            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(4, activation='sigmoid')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss=tf.keras.losses.BinaryCrossentropy(),
@@ -210,10 +212,10 @@ class Model:
         model.save_weights('model.h5')
         acc = []
         for i in range(repeats):
-            print('='*60)
-            print(f'Repeat #{i+1}')
+            print('-'*60)
+            print(f'Repeat #{i+1} out of {repeats+1}')
             print(self)
-            print('=' * 60)
+            print('-' * 60)
             os.chdir(self.cwd + "\\model_opt")
             model.load_weights('model.h5')
             result = self.train_and_test(self.data, save=False, get_summary=False)
@@ -226,14 +228,14 @@ class Model:
                   f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons}/repeat_train{i+1} folder')
         gmt = time.gmtime()
         report = self.summary(accuracy=acc, save=False)
-        print('=' * 60)
+        print('-' * 60)
         os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}", exist_ok=True)
         utils.save_to_csv(f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', report,
-                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}")
+                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}")
         print(f'file saved to summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
               f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
         print(report)
-        print('=' * 60)
+        print('-' * 60)
         return report
 
 

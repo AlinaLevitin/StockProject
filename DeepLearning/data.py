@@ -82,7 +82,7 @@ class Data:
         self.interval = interval
 
         all_data = pd.DataFrame()
-        print('=' * 60)
+        print('-' * 60)
         print('reading all files in all_hist folder')
         analysis_hist = self.cwd + "\\all_hist"
         files = os.listdir(analysis_hist)
@@ -92,7 +92,7 @@ class Data:
             all_data = pd.concat([all_data, data])
             print(f"analyzed {file}")
         all_data.reset_index(drop=True, inplace=True)
-        print('=' * 60)
+        print('-' * 60)
         self.data = all_data
 
     def read_and_get_values(self, file):

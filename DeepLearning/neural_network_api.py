@@ -27,18 +27,32 @@ def read_data_for_training(copy=False):
 
 
 def model_opt():
+    """
+    Use this to optimize the neural network with reduced data volume to 20%.
+    Optimize layers, activation functions and number or neuron
+
+    :return: csv files with reports for the optimization in model_opt folder.
+    * summary for all the runs (repeat_summary)
+    * summary for number of repeats (summary_#_repeats)
+    * accuracy and loss at every run (acc_and_loss)
+    """
+    print("=" * 60)
+    print("Loading data")
+    print("=" * 60)
     training_data = DeepLearning.TrainingData(config.CWD)
     training_data.open_all_data()
     training_data.reduce_data(0.2)
     training_data.split_data(config.TEST_DATA, config.VALIDATION_DATA)
+    print("=" * 60)
 
     REPEATS = 1
 
     all_summary = pd.DataFrame()
-
+    print(f'Commencing model optimization for {REPEATS} repeats')
+    print("=" * 60)
     for i in range(1, 5):
         model = DeepLearning.Model(config.CWD)
-        neurons = 50 * i
+        neurons = 100 * i
         result = model.repeat_train(training_data, REPEATS,  neurons, config.EPOCHS, config.LEARNING_RATE,
                                     config.BATCH_SIZE)
         all_summary = pd.concat([all_summary, result])
