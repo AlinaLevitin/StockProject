@@ -111,6 +111,8 @@ class Model:
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dense(4, activation='sigmoid')])
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss=tf.keras.losses.BinaryCrossentropy(),
@@ -213,7 +215,7 @@ class Model:
         acc = []
         for i in range(repeats):
             print('-'*60)
-            print(f'Repeat #{i+1} out of {repeats+1}')
+            print(f'Repeat #{i+1} out of {repeats}')
             print(self)
             print('-' * 60)
             os.chdir(self.cwd + "\\model_opt")
@@ -221,17 +223,18 @@ class Model:
             result = self.train_and_test(self.data, save=False, get_summary=False)
             acc.append(result[0])
             acc_and_loss_df = result[1]
+            gmt = time.gmtime()
             os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}", exist_ok=True)
-            utils.save_to_csv(f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}', acc_and_loss_df,
+            utils.save_to_csv(f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', acc_and_loss_df,
                               self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}")
-            print(f'file saved to acc_and_loss_repeat_{i+1}_neurons_{self.neurons}.csv'
+            print(f'file saved to acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
                   f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons}/repeat_train{i+1} folder')
         gmt = time.gmtime()
         report = self.summary(accuracy=acc, save=False)
         print('-' * 60)
         os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}", exist_ok=True)
         utils.save_to_csv(f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', report,
-                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}")
+                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}")
         print(f'file saved to summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
               f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
         print(report)

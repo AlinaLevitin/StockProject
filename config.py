@@ -80,5 +80,5 @@ BATCH_SIZE = 128
 EPOCHS = 100
 
 # Learning rate:
-LEARNING_RATE = 10 ** -3
+LEARNING_RATE = 10 ** -4
 
