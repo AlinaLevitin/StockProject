@@ -178,7 +178,8 @@ class Model:
 
         :param name: name of the file
         """
-        os.chdir(self.cwd)
+        os.makedirs(self.cwd + '\\trained_neural_network', exist_ok=True)
+        os.chdir(self.cwd + '\\trained_neural_network')
         self.model.save(name + '.h5')
         print(f'model was saved to file: {name}.h5')
 
@@ -188,8 +189,14 @@ class Model:
 
         :param name: name of the file
         """
-        os.chdir(self.cwd)
-        self.model = keras.models.load_model(name + '.h5')
+        os.makedirs(self.cwd + '\\trained_neural_network', exist_ok=True)
+        os.chdir(self.cwd + '\\trained_neural_network')
+        print('-' * 60)
+        try:
+            self.model = keras.models.load_model(name + '.h5')
+        except (Exception,):
+            raise FileNotFoundError('Unable to load trained neural network,'
+                                    f'please make sure that {name}.h5 is in the folder "trained_neural_network"')
         self.model.summary()
         loaded_model_neurons = self.model.get_layer('dense').output_shape[1]
         if not self.neurons or self.neurons == loaded_model_neurons:
