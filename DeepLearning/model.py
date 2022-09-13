@@ -103,7 +103,10 @@ class Model:
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(self.neurons, activation='relu'),
             tf.keras.layers.Dense(4, activation='sigmoid')])
@@ -116,12 +119,11 @@ class Model:
         """
         train and test the model
 
-        :param get_summary: bool optional, default will save a summary file
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
         :param save: optional to save callbacks of the neural network, will create new folder in case its missing
-        :type save: bool optional
-        :return: accuracy of testing data, and a summary file (.csv)
+        :param get_summary: bool optional, default will save a summary file
+        :return: accuracy of testing data, and history pandas dataframe
         """
 
         self.data = data
@@ -147,14 +149,13 @@ class Model:
 
         acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy' : val_acc, 'validation_loss': val_loss}
         acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
-        gmt = time.gmtime()
-        utils.save_to_csv(f'acc_and_loss_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', acc_and_loss_df, self.cwd + "\\model_opt\\reports")
+
 
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
         accuracy = result[1]
         if get_summary:
             print(self.summary(accuracy, save=get_summary))
-        return accuracy
+        return accuracy, acc_and_loss_df
 
     def load_callback(self):
         """
@@ -195,13 +196,13 @@ class Model:
         """
         trains the model chosen number of times for hyperparameters optimization
 
-        :param data: TrainingData, make sure to split the data
+        :param data: TrainingData, make sure to split the data and reduce data volume or else it will take a long time
         :param repeats: number of training repeats
         :param neurons: the number of neurons in the model
         :param epochs: the number of epochs for training
         :param learning_rate: the learning rate for stochastic gradient descent
         :param batch_size: the batch size for stochastic gradient descent
-        :return: summary csv file
+        :return: summary.csv and acc_and_loss.csv files in "model_opt" folder
         """
         model = self.set_model(data, neurons, epochs, learning_rate, batch_size)
         model.summary()
@@ -211,13 +212,26 @@ class Model:
         for i in range(repeats):
             print('='*60)
             print(f'Repeat #{i+1}')
+            print(self)
             print('=' * 60)
             os.chdir(self.cwd + "\\model_opt")
             model.load_weights('model.h5')
             result = self.train_and_test(self.data, save=False, get_summary=False)
-            acc.append(result)
+            acc.append(result[0])
+            acc_and_loss_df = result[1]
+            os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}", exist_ok=True)
+            utils.save_to_csv(f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}', acc_and_loss_df,
+                              self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}")
+            print(f'file saved to acc_and_loss_repeat_{i+1}_neurons_{self.neurons}.csv'
+                  f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons}/repeat_train{i+1} folder')
+        gmt = time.gmtime()
         report = self.summary(accuracy=acc, save=False)
         print('=' * 60)
+        os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}", exist_ok=True)
+        utils.save_to_csv(f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', report,
+                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}")
+        print(f'file saved to summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
+              f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
         print(report)
         print('=' * 60)
         return report
@@ -225,7 +239,7 @@ class Model:
 
     def summary(self, accuracy, save=True):
         """
-        generated a summary csv file
+        generated a summary csv file in "reports" folder
 
         :param save: bool optional, default save=True will save the summary to csv, otherwise will not save.
         :param accuracy: float or list of accuracy after training
@@ -255,9 +269,11 @@ class Model:
         gmt = time.gmtime()
         summary = pd.DataFrame([summary_dict])
         if save:
+            os.makedirs(self.cwd + "\\reports", exist_ok=True)
             utils.save_to_csv(f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', summary,
                           self.cwd + "\\reports")
-            print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv')
+            print(f'Saved summary to file: summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}.csv'
+                  f'in {self.cwd + "/reports"}')
         return summary
 
     def predict_values(self, data):

@@ -1,6 +1,7 @@
 """
 API to read the data, train the neural network and predict results
 """
+import os
 import DeepLearning
 import config
 import pandas as pd
@@ -31,7 +32,7 @@ def model_opt():
     training_data.reduce_data(0.2)
     training_data.split_data(config.TEST_DATA, config.VALIDATION_DATA)
 
-    REPEATS = 10
+    REPEATS = 1
 
     all_summary = pd.DataFrame()
 
@@ -43,6 +44,7 @@ def model_opt():
         all_summary = pd.concat([all_summary, result])
 
     gmt = time.gmtime()
+    os.makedirs(config.CWD + "\\model_opt", exist_ok=True)
     utils.save_to_csv(f'repeat_summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}', all_summary,
                       config.CWD + "\\model_opt")
     print(all_summary)
