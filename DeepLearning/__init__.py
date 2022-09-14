@@ -11,3 +11,5 @@ from .dl_utils import average
 from .dl_utils import variance
 from .dl_utils import stddev
 from .dl_utils import position
+from .reports import Reports
+from .model_opt import ModelOpt

@@ -20,17 +20,19 @@ def open_csv(cwd: str, file_name: str):
     return df
 
 
-def save_to_csv(name: str, data, cwd: str):
+def save_to_csv(name: str, data, path: str):
     """
     save to csv file using pandas
     :param name: name for the file
     :param data: the data to save in a form of pandas DataFrame
     :type data: pandas DataFrame
-    :param cwd: current working directory using cwd = os.getcwd()
+    :param path: path for file saving
     :return: saves the data to csv file
     """
-    os.chdir(cwd)
+    os.makedirs(path, exist_ok=True)
+    os.chdir(path)
     data.to_csv(name + '.csv', index=False)
+    print(f'Saved file: {name}.csv in {path} folder')
 
 
 def copy_to_one_dir(cwd: str):

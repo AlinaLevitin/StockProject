@@ -36,33 +36,27 @@ def model_opt():
     * summary for number of repeats (summary_#_repeats)
     * accuracy and loss at every run (acc_and_loss)
     """
-    print("=" * 60)
-    print("Loading data")
-    print("=" * 60)
     training_data = DeepLearning.TrainingData(config.CWD)
     training_data.open_all_data()
     training_data.reduce_data(0.2)
     training_data.split_data(config.TEST_DATA, config.VALIDATION_DATA)
     print("=" * 60)
 
-    REPEATS = 1
+    REPEATS = 3
 
     all_summary = pd.DataFrame()
     print(f'Commencing model optimization for {REPEATS} repeats')
     print("=" * 60)
     for i in range(1, 5):
-        model = DeepLearning.Model(config.CWD)
-        neurons = 300 * i
-        result = model.repeat_train(training_data, REPEATS,  neurons, config.EPOCHS, config.LEARNING_RATE,
-                                    config.BATCH_SIZE)
+        neurons = 3 * i
+        repeat_train = DeepLearning.ModelOpt(config.CWD)
+        result = repeat_train.repeat_train(training_data, REPEATS, neurons, config.EPOCHS, config.LEARNING_RATE,
+                                           config.BATCH_SIZE)
         all_summary = pd.concat([all_summary, result])
 
     gmt = time.gmtime()
     all_summary_file = f'repeat_summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-    os.makedirs(config.CWD + "\\model_opt", exist_ok=True)
-    utils.save_to_csv(f'{all_summary_file}', all_summary,
-                      config.CWD + "\\model_opt")
-    pront(f'repeat summary was saved to file: {all_summary_file}.csv in model_opt folder')
+    utils.save_to_csv(f'{all_summary_file}', all_summary, config.CWD + "\\model_opt")
     print("=" * 60)
     print(all_summary)
 
@@ -110,7 +104,11 @@ def open_data_and_train(from_save=True):
     print('Training is commencing!')
     print('=' * 60)
     try:
-        model.train_and_test(training_data)
+        result = model.train_and_test(training_data)
+        accuracy = result[0]
+        acc_and_loss = result[1]
+        report = DeepLearning.Reports(config.CWD, training_data, model)
+        report.train_report(accuracy, acc_and_loss)
         model.save_model('trained_neural_network')
     except (Exception,):
         raise FileExistsError('Unable to start training,'
@@ -145,4 +143,3 @@ def predict_results():
         predict = pd.concat([predict, new_row])
     predict.reset_index(drop=True, inplace=True)
     utils.save_to_csv('predicted_results', predict, config.CWD)
-    print('predicted results saved to predicted_results.csv file')

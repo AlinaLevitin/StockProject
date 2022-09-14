@@ -59,7 +59,7 @@ If you change any of these parameters you need to re-train the model
 3. use DeepLearning.NeuralNetwork_API.open_data_and_train(from_save=False)
 """
 # Layer dense:
-NEURONS = 100
+NEURONS = 500
 """
 Changing the neurons will affect the architecture of the model, therefore, please delete old callback folder
 and trained_neural_network.h5 file before training the model
@@ -80,5 +80,5 @@ BATCH_SIZE = 128
 EPOCHS = 100
 
 # Learning rate:
-LEARNING_RATE = 10 ** -4
+LEARNING_RATE = 10 ** -3
 

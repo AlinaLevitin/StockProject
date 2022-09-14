@@ -3,14 +3,12 @@ Model class to generate a neural network
 This class allows training, saving, loading and using the model to predict results
 """
 
-import csv
-import time
 import keras
 import tensorflow as tf
 import pandas as pd
 import os
-import utils
-from DeepLearning import dl_utils
+
+import DeepLearning
 
 
 class Model:
@@ -43,18 +41,13 @@ class Model:
     train_and_test(self, data,  save: bool = False)
         class method to test and train the model according to the chosen hyperparameters in set_model
         returns accuracy of test
-        will save the weights every 5 epochs using the callbacks function
+        will save the weights every epoch using the callbacks function
     load_callback(self)
         will load the latest callback
     save_model(self, name: str)
         will save a trained model
     load_model(self, name: str)
         will load a trained model
-    repeat_train(self, repeats, neurons, epochs, learning_rate, batch_size)
-        for optimization of hyperparameters, this will repeat the class method train_and_test
-        and result a summery file
-    summary(self, accuracy)
-        generates a summary file
     predict_values(self, data)
         predicting outcomes according to the trained neural network
         returns a numpy array
@@ -82,6 +75,21 @@ class Model:
         return f"neurons: {self.neurons}, epochs: {self.epochs}," \
                f"learning rate: {self.learning_rate}, batch size: {self.batch_size} "
 
+    def get_neurons(self):
+        return self.neurons
+
+    def get_epochs(self):
+        return self.epochs
+
+    def get_learning_rate(self):
+        return self.learning_rate
+
+    def get_batch_size(self):
+        return self.batch_size
+
+    def get_summary(self):
+        self.model.summary()
+
     def set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int):
         """
         initializing the model
@@ -103,33 +111,35 @@ class Model:
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(4, activation='sigmoid')])
+            tf.keras.layers.Dropout(.2),
+            tf.keras.layers.Dense(self.neurons, activation='elu'),
+            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
+            tf.keras.layers.Dense(4, activation='sigmoid')]
+            )
+
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
                            loss=tf.keras.losses.BinaryCrossentropy(),
                            metrics=['accuracy'])
         return self.model
 
-    def train_and_test(self, data,  save: bool = True, get_summary : bool =True):
+    def train_and_test(self, data,  save: bool = True):
         """
         train and test the model
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
-        :param save: optional to save callbacks of the neural network, will create new folder in case its missing
-        :param get_summary: bool optional, default will save a summary file
+        :param save: optional to save callbacks of the neural network every epoch, will create new folder in case its missing
+
         :return: accuracy of testing data, and history pandas dataframe
         """
 
@@ -157,11 +167,8 @@ class Model:
         acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy' : val_acc, 'validation_loss': val_loss}
         acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
 
-
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
         accuracy = result[1]
-        if get_summary:
-            print(self.summary(accuracy, save=get_summary))
         return accuracy, acc_and_loss_df
 
     def load_callback(self):
@@ -178,8 +185,8 @@ class Model:
 
         :param name: name of the file
         """
-        os.makedirs(self.cwd + '\\trained_neural_network', exist_ok=True)
-        os.chdir(self.cwd + '\\trained_neural_network')
+        os.makedirs(self.cwd + '\\trained_model', exist_ok=True)
+        os.chdir(self.cwd + '\\trained_model')
         self.model.save(name + '.h5')
         print(f'model was saved to file: {name}.h5')
 
@@ -189,21 +196,21 @@ class Model:
 
         :param name: name of the file
         """
-        os.makedirs(self.cwd + '\\trained_neural_network', exist_ok=True)
-        os.chdir(self.cwd + '\\trained_neural_network')
+        os.makedirs(self.cwd + '\\trained_model', exist_ok=True)
+        os.chdir(self.cwd + '\\trained_model')
         print('-' * 60)
         try:
             self.model = keras.models.load_model(name + '.h5')
         except (Exception,):
             raise FileNotFoundError('Unable to load trained neural network,'
-                                    f'please make sure that {name}.h5 is in the folder "trained_neural_network"')
+                                    f'please make sure that {name}.h5 is in the folder "trained_model"')
         self.model.summary()
         loaded_model_neurons = self.model.get_layer('dense').output_shape[1]
         if not self.neurons or self.neurons == loaded_model_neurons:
             self.neurons = loaded_model_neurons
         else:
             raise ValueError("number of neurons in the load_model and set_model don't match,"
-                  "if you want to change the number of neurons please delete old trained_neural_network.h5 file")
+                  "if you want to change the number of neurons please delete old trained_model.h5 file")
         print(f'Loading model from file: {name}.h5')
         print('-' * 60)
 
@@ -220,9 +227,10 @@ class Model:
         :return: summary.csv and acc_and_loss.csv files in "model_opt" folder
         """
         model = self.set_model(data, neurons, epochs, learning_rate, batch_size)
-        model.summary()
+        self.model.summary()
+        os.makedirs(self.cwd + "\\model_opt", exist_ok=True)
         os.chdir(self.cwd + "\\model_opt")
-        model.save_weights('model.h5')
+        self.model.save_weights('model.h5')
         acc = []
         for i in range(repeats):
             print('-'*60)
@@ -230,67 +238,16 @@ class Model:
             print(self)
             print('-' * 60)
             os.chdir(self.cwd + "\\model_opt")
-            model.load_weights('model.h5')
-            result = self.train_and_test(self.data, save=False, get_summary=False)
-            acc.append(result[0])
-            acc_and_loss_df = result[1]
-            gmt = time.gmtime()
-            acc_and_loss_file = f'acc_and_loss_repeat_{i+1}_neurons_{self.neurons}_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-            os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}", exist_ok=True)
-            utils.save_to_csv(f'{acc_and_loss_file}', acc_and_loss_df,
-                              self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}\\repeat_train{i+1}")
-            print(f'file saved to {acc_and_loss_file}.csv'
-                  f'in {self.cwd} + /model_opt/reports/neurons_{self.neurons}/repeat_train{i+1} folder')
-        gmt = time.gmtime()
-        report = self.summary(accuracy=acc, save=False)
-        report_file = f'summary_{repeats}_repeats_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-        print('-' * 60)
-        os.makedirs(self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}", exist_ok=True)
-        utils.save_to_csv(f'{report_file}', report,
-                          self.cwd + f"\\model_opt\\reports\\neurons_{self.neurons}")
-        print(f'file saved to {report_file}.csv in {self.cwd} + /model_opt/reports/neurons_{self.neurons} folder')
-        print(report)
-        print('-' * 60)
-        return report
-
-
-    def summary(self, accuracy, save=True):
-        """
-        generated a summary csv file in "reports" folder
-
-        :param save: bool optional, default save=True will save the summary to csv, otherwise will not save.
-        :param accuracy: float or list of accuracy after training
-        """
-
-        if isinstance(accuracy, list):
-            repeats = len(accuracy)
-        else:
-            repeats = 1
-
-        accuracy_average = dl_utils.average(accuracy)
-        stddev = dl_utils.stddev(accuracy)
-
-        summary_dict = {'average accuracy': accuracy_average,
-                        'STDEV': stddev,
-                        'repeats': repeats,
-                        'training data': self.data.train_num,
-                        'validation data': self.data.val_num,
-                        'test data': self.data.test_num,
-                        'steps back': self.data.steps_back,
-                        'steps forward': self.data.steps_forward,
-                        'batch_size': self.batch_size,
-                        'epochs': self.epochs,
-                        'neurons': self.neurons,
-                        'learning_rate': self.learning_rate,
-                        }
-        gmt = time.gmtime()
-        summary = pd.DataFrame([summary_dict])
-        if save:
-            summary_file = f'summary_{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-            os.makedirs(self.cwd + "\\reports", exist_ok=True)
-            utils.save_to_csv(f'{summary_file}', summary,
-                          self.cwd + "\\reports")
-            print(f'Saved summary to file: {summary_file}.csv in {self.cwd + "/reports"}')
+            self.model.load_weights('model.h5')
+            result = self.train_and_test(self.data, save=False)
+            accuracy = result[0]
+            acc_and_loss = result[1]
+            acc.append(accuracy)
+            report = DeepLearning.Reports(self.cwd, self.data, self.model)
+            report.repeat_train_report(i, accuracy, acc_and_loss)
+        report = DeepLearning.Reports(self.cwd, self.data, self.model)
+        path = f"\\model_opt\\reports\\neurons_{self.neurons}"
+        summary = report.repeat_train_summary(accuracy=acc, path=path)
         return summary
 
     def predict_values(self, data):

@@ -5,6 +5,8 @@ import pandas as pd
 import os
 import json
 
+import utils
+
 
 class Data:
     """
@@ -155,15 +157,14 @@ class Data:
         saves a csv file with the data and a json file with the parameters
         """
 
-        os.chdir(self.cwd)
-        self.data.to_csv(f'{name}.csv', index=False)
+        utils.save_to_csv(name, self.data, self.cwd)
         params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent': self.percent,
                   'interval': self.interval}
         json_save = json.dumps(params)
         with open(f'params_{name}.json', 'w') as json_file:
             json_file.write(json_save)
         print(self)
-        print(f'saved the data as {name}.csv and the parameters as params_{name}.json')
+        print(f'Saved parameters as params_{name}.json')
 
     def open_all_data(self, name: str = 'data'):
         """
@@ -175,7 +176,8 @@ class Data:
         :return: Data instance
         opens a csv file with the data and a json file with the parameters
         """
-
+        print("-" * 60)
+        print("Loading data")
         os.chdir(self.cwd)
         data = pd.read_csv(f'{name}.csv')
         with open(f'params_{name}.json') as json_file:
@@ -189,6 +191,7 @@ class Data:
               f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, "
               f"percent: {self.percent}, interval: {self.interval}")
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
+        print("-" * 60)
 
     def long(self, future, symbol: str, one_percent: float) -> int:
         """
