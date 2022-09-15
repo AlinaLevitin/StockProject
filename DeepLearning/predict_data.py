@@ -75,12 +75,16 @@ class PredictData(Data):
         print('reading all files in predict_data folder')
         print('=' * 60)
         predict_data = self.cwd + "\\predict_data"
+        os.makedirs(predict_data, exist_ok=True)
         files = os.listdir(predict_data)
-        for file in files:
-            os.chdir(predict_data)
-            data = self.read_and_get_values(file)
-            all_data = pd.concat([all_data, data])
-            print(f"analyzed {file}")
+        if not files:
+            raise FileNotFoundError('predict_data folder is empty')
+        else:
+            for file in files:
+                os.chdir(predict_data)
+                data = self.read_and_get_values(file)
+                all_data = pd.concat([all_data, data])
+                print(f"analyzed {file}")
         self.data = self.scale_data(all_data)
         self.input_shape = self.data.shape[1]
         print('=' * 60)
