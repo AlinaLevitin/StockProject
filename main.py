@@ -1,7 +1,6 @@
 """
 main file to read data, train the neural network and predict results
 """
-
 import DeepLearning
 
 # DeepLearning.neural_network_api.read_data_for_training(copy=False)

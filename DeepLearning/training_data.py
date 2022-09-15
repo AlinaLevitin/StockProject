@@ -2,10 +2,13 @@
 TrainingData class inherits from Data class to split the data to train, validation and test
 for deep learning
 """
-from .data import Data
 from sklearn.model_selection import train_test_split
 import numpy as np
+
+from .data import Data
+
 np.random.seed(10)
+
 
 class TrainingData(Data):
     """
@@ -105,7 +108,7 @@ class TrainingData(Data):
         print('-' * 60)
 
     def reduce_data(self, portion):
-        remove_n = int(self.data.shape[0]*(1-portion))
+        remove_n = int(self.data.shape[0] * (1 - portion))
         drop_indices = np.random.choice(self.data.index, remove_n, replace=True)
         df_subset = self.data.drop(drop_indices)
         self.data = df_subset

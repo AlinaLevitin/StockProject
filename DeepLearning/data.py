@@ -1,9 +1,11 @@
 """
 Data class to handle csv time-point data sets and convert them to pandas Dataframes
 """
-import pandas as pd
+# TODO rewrite methods to be more clear
 import os
 import json
+
+import pandas as pd
 
 import utils
 
@@ -22,7 +24,9 @@ class Data:
         the number of time points in the past
     steps_forward : int
         the number of time points in the future
-    percent : int
+    percent_long : float
+        percent as the threshold for win or loss outcome
+    percent_short : float
         percent as the threshold for win or loss outcome
     interval : int
         interval between time points collected
@@ -54,7 +58,8 @@ class Data:
         self.cwd = cwd
         self.steps_back = None
         self.steps_forward = None
-        self.percent = None
+        self.percent_long = None
+        self.percent_short = None
         self.interval = None
         self.data = None
 
@@ -64,15 +69,18 @@ class Data:
         """
         return f"number of data points : {self.data.shape[0]}, " \
                f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
-               f"percent: {self.percent}, interval: {self.interval}"
+               f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}"
 
-    def read_all_data(self, steps_back: int, steps_forward: int, percent: float, interval: int):
+    def read_all_data(self, steps_back: int, steps_forward: int,
+                      percent_long: float, percent_short: float, interval: int):
         """
         reads the data according to the chosen parameters
 
+
         :param steps_back: the number of time points in the past
         :param steps_forward: the number of time points in the future
-        :param percent: percent as the threshold for win or loss outcome
+        :param percent_short: percent as the threshold for win or loss outcome
+        :param percent_long: percent as the threshold for win or loss outcome
         :param interval: interval between time points collected
 
         :return: pandas DataFrame with the input and targets for deep learning
@@ -80,7 +88,8 @@ class Data:
 
         self.steps_back = steps_back
         self.steps_forward = steps_forward
-        self.percent = percent
+        self.percent_long = percent_long
+        self.percent_short = percent_short
         self.interval = interval
 
         all_data = pd.DataFrame()
@@ -158,8 +167,8 @@ class Data:
         """
 
         utils.save_to_csv(name, self.data, self.cwd)
-        params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent': self.percent,
-                  'interval': self.interval}
+        params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent_long': self.percent_long,
+                  'percent_short': self.percent_short, 'interval': self.interval}
         json_save = json.dumps(params)
         with open(f'params_{name}.json', 'w') as json_file:
             json_file.write(json_save)
@@ -184,12 +193,13 @@ class Data:
             params = json.load(json_file)
         self.steps_back = params['steps_back']
         self.steps_forward = params['steps_forward']
-        self.percent = params['percent']
+        self.percent_long = params['percent_long']
+        self.percent_short = params['percent_short']
         self.interval = params['interval']
         self.data = data
         print(f"number of data points : {self.data.shape[0]}, "
               f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, "
-              f"percent: {self.percent}, interval: {self.interval}")
+              f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}")
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
         print("-" * 60)
 
@@ -211,8 +221,8 @@ class Data:
             col = 2
 
         time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + self.percent*one_percent
-        mask2 = future.iloc[:, col] < time_0 - self.percent*one_percent
+        mask1 = future.iloc[:, col] > time_0 + self.percent_long*one_percent
+        mask2 = future.iloc[:, col] < time_0 - self.percent_long*one_percent
 
         plus = future.loc[mask1, symbol]
         minus = future.loc[mask2, symbol]
@@ -240,8 +250,8 @@ class Data:
             col = 2
 
         time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + self.percent*one_percent
-        mask2 = future.iloc[:, col] < time_0 - self.percent*one_percent
+        mask1 = future.iloc[:, col] > time_0 + self.percent_short*one_percent
+        mask2 = future.iloc[:, col] < time_0 - self.percent_short*one_percent
 
         plus = future.loc[mask1, symbol]
         minus = future.loc[mask2, symbol]

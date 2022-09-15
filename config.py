@@ -1,6 +1,7 @@
 """
 Configuration file for data collection/processing and training the neural network
 """
+# TODO reduce steps forward and percent
 import os
 
 CWD = os.getcwd()
@@ -24,8 +25,11 @@ STEPS_BACK = 21
 # time points before maximum difference
 STEPS_FORWARD = 20
 
-# the minimum percent for win
-PERCENT = 1
+# the minimum percent for long win
+PERCENT_LONG = 1
+
+# the minimum percent for short win
+PERCENT_SHORT = 1
 
 # Interval for collecting data
 INTERVAL = 10
@@ -81,4 +85,3 @@ EPOCHS = 100
 
 # Learning rate:
 LEARNING_RATE = 10 ** -2
-

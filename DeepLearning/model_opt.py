@@ -1,5 +1,9 @@
-import DeepLearning
+"""
+ModelOpt class for model architecture optimization
+"""
 import os
+
+import DeepLearning
 
 
 class ModelOpt:
