@@ -74,7 +74,7 @@ Feel free to change batch size and epochs as needed
 
 """
 # Batch size:
-BATCH_SIZE = 128
+BATCH_SIZE = 256
 
 # Number of epochs:
 EPOCHS = 100
