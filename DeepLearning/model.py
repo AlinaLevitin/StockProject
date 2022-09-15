@@ -111,7 +111,7 @@ class Model:
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
-            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
+            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
             tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
