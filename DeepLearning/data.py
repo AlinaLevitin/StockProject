@@ -7,7 +7,7 @@ import json
 
 import pandas as pd
 
-import utils
+import DeepLearning
 
 
 class Data:
@@ -75,7 +75,7 @@ class Data:
 
     def read_all_data(self, steps_back: int, steps_forward: int,
                       percent_long: float, percent_short: float, interval: int,
-                      start_date: str, end_date: str
+                      start_date: int, end_date: int
                       ):
         """
         reads the data according to the chosen parameters
@@ -183,7 +183,7 @@ class Data:
         saves a csv file with the data and a json file with the parameters
         """
 
-        utils.save_to_csv(name, self.data, self.cwd)
+        DeepLearning.utils.save_to_csv(name, self.data, self.cwd)
         params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent_long': self.percent_long,
                   'percent_short': self.percent_short, 'interval': self.interval}
         json_save = json.dumps(params)

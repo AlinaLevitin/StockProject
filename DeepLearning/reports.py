@@ -8,7 +8,6 @@ import time
 
 import pandas as pd
 
-import utils
 import DeepLearning
 
 
@@ -119,7 +118,7 @@ class Reports:
             time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
             summary_file = f'summary_{time_stamp}'
             print('+' * 60)
-            utils.save_to_csv(f'{summary_file}', summary, self.cwd + path)
+            DeepLearning.utils.save_to_csv(f'{summary_file}', summary, self.cwd + path)
             print('+' * 60)
         return summary
 

@@ -2,6 +2,8 @@
 Supporting file containing utility functions
 """
 import os
+from _csv import reader
+from csv import DictReader
 
 import pandas as pd
 import glob
@@ -56,3 +58,16 @@ def copy_to_one_dir(cwd: str):
                 else:
                     shutil.copy(symbol + "\\" + file, cwd + "\\all_hist\\" + file)
                     print(f'copied {file} to "all_hist" folder')
+
+
+def read_config(cwd: str) -> dict:
+    os.chdir(cwd)
+    config_list = []
+    with open('config.csv') as file:
+        csv_reader = reader(file)
+        next(csv_reader)
+        for row in csv_reader:
+            config_list.append(row)
+    config = {item[0]: item[1] for item in config_list}
+    return config
+
