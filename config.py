@@ -5,6 +5,13 @@ Configuration file for data collection/processing and training the neural networ
 import os
 
 CWD = os.getcwd()
+# =================================================================
+"""
+Configuration for training time period
+"""
+START_DATE = 20180000
+
+END_DATE = 20210000
 
 # =================================================================
 """

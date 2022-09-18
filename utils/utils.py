@@ -43,11 +43,16 @@ def copy_to_one_dir(cwd: str):
     """
     analysis_hist = glob.glob(cwd + "\\analysis_hist")
     date_folders = glob.glob(analysis_hist[0] + "\\*")
-    os.makedirs(cwd + "\\all_hist", exist_ok=True)
+    new_folder = cwd + "\\all_hist"
+    os.makedirs(new_folder, exist_ok=True)
+    existing_files = os.listdir(new_folder)
     for date in date_folders:
         symbol_folders = glob.glob(date + "\\*")
         for symbol in symbol_folders:
             files = os.listdir(symbol)
             for file in files:
-                shutil.copy(symbol + "\\" + file, cwd + "\\all_hist\\" + file)
-                print("copied " + file)
+                if file in existing_files:
+                    print(f'{file} already exists in "all_hist" folder')
+                else:
+                    shutil.copy(symbol + "\\" + file, cwd + "\\all_hist\\" + file)
+                    print(f'copied {file} to "all_hist" folder')

@@ -56,6 +56,8 @@ class Data:
         """
 
         self.cwd = cwd
+        self.start_date = None
+        self.end_date = None
         self.steps_back = None
         self.steps_forward = None
         self.percent_long = None
@@ -72,16 +74,19 @@ class Data:
                f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}"
 
     def read_all_data(self, steps_back: int, steps_forward: int,
-                      percent_long: float, percent_short: float, interval: int):
+                      percent_long: float, percent_short: float, interval: int,
+                      start_date: str, end_date: str
+                      ):
         """
         reads the data according to the chosen parameters
-
 
         :param steps_back: the number of time points in the past
         :param steps_forward: the number of time points in the future
         :param percent_short: percent as the threshold for win or loss outcome
         :param percent_long: percent as the threshold for win or loss outcome
         :param interval: interval between time points collected
+        :param end_date:
+        :param start_date:
 
         :return: pandas DataFrame with the input and targets for deep learning
         """
@@ -91,10 +96,14 @@ class Data:
         self.percent_long = percent_long
         self.percent_short = percent_short
         self.interval = interval
+        self.start_date = start_date
+        self.end_date = end_date
 
         all_data = pd.DataFrame()
         print('-' * 60)
-        print('reading all files in all_hist folder')
+        print('-' * 60)
+        print('Reading all files in all_hist folder')
+        print('-' * 60)
         analysis_hist = self.cwd + "\\all_hist"
         files = os.listdir(analysis_hist)
         for file in files:
@@ -104,9 +113,11 @@ class Data:
             print(f"analyzed {file}")
         all_data.reset_index(drop=True, inplace=True)
         print('-' * 60)
+        print('Finished reading files')
+        print('-' * 60)
         self.data = all_data
 
-    def read_and_get_values(self, file):
+    def read_and_get_values(self, file: str):
         """
         reads the data according to the chosen parameters from a chosen file
 
@@ -117,43 +128,49 @@ class Data:
             input and targets for one instance
         """
 
-        one_percent = float(file.split('_')[4].replace('.csv', ''))
+        one_percent = float(file.split('_')[-1].replace('.csv', ''))
+        date = int(file.split('_')[2])
+        if int(self.start_date) < date < int(self.end_date):
+            data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
+            shrink_dataframe = int(data_raw.shape[0] - self.steps_forward)
 
-        data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
-        shrink_dataframe = int(data_raw.shape[0] - self.steps_forward)
+            data = pd.DataFrame()
 
-        data = pd.DataFrame()
+            # Finding the result for each time point
+            for time in range(self.steps_back, shrink_dataframe, self.interval):
+                time_stamp = data_raw.loc[time, 'time']
+                h_m_s = time_stamp.split(' ')[1]
+                if '09:00:00' < h_m_s < '14:00:00':
+                    future = data_raw.iloc[time:time + self.steps_forward, :].copy()
 
-        # Finding the result for each time point
-        for time in range(self.steps_back, shrink_dataframe, self.interval):
-            future = data_raw.iloc[time:time + self.steps_forward, :].copy()
+                    A_future_long = self.long(future, 'A', one_percent)
+                    B_future_long = self.long(future, 'B', one_percent)
+                    A_future_short = self.short(future, 'A', one_percent)
+                    B_future_short = self.short(future, 'B', one_percent)
 
-            A_future_long = self.long(future, 'A', one_percent)
-            B_future_long = self.long(future, 'B', one_percent)
-            A_future_short = self.short(future, 'A', one_percent)
-            B_future_short = self.short(future, 'B', one_percent)
-
-            A_past = data_raw.iloc[time - self.steps_back:time, 1].to_frame()
-            B_past = data_raw.iloc[time - self.steps_back:time, 2].to_frame()
-            df_A = A_past.T
-            df_B = B_past.T
-            A_len = df_A.shape[1]
-            B_len = df_B.shape[1]
-            columns_A = [f"A_x({x})" for x in range(A_len)]
-            columns_B = [f"B_x({x})" for x in range(B_len)]
-            df_A.columns = columns_A
-            df_B.columns = columns_B
-            df_B.reset_index(inplace=True)
-            df_A.reset_index(inplace=True)
-            time_point = pd.concat([df_A, df_B], axis=1, join='outer')
-            time_point.drop(labels='index', axis=1, inplace=True)
-            time_point['A_long_(y)'] = A_future_long
-            time_point['B_long_(y)'] = B_future_long
-            time_point['A_short_(y)'] = A_future_short
-            time_point['B_short_(y)'] = B_future_short
-            data.index.name = 'index'
-            data = pd.concat([data, time_point])
-        return data
+                    A_past = data_raw.iloc[time - self.steps_back:time, 1].to_frame()
+                    B_past = data_raw.iloc[time - self.steps_back:time, 2].to_frame()
+                    df_A = A_past.T
+                    df_B = B_past.T
+                    A_len = df_A.shape[1]
+                    B_len = df_B.shape[1]
+                    columns_A = [f"A_x({x})" for x in range(A_len)]
+                    columns_B = [f"B_x({x})" for x in range(B_len)]
+                    df_A.columns = columns_A
+                    df_B.columns = columns_B
+                    df_B.reset_index(inplace=True)
+                    df_A.reset_index(inplace=True)
+                    time_point = pd.concat([df_A, df_B], axis=1, join='outer')
+                    time_point.drop(labels='index', axis=1, inplace=True)
+                    time_point['A_long_(y)'] = A_future_long
+                    time_point['B_long_(y)'] = B_future_long
+                    time_point['A_short_(y)'] = A_future_short
+                    time_point['B_short_(y)'] = B_future_short
+                    data.index.name = 'index'
+                    data = pd.concat([data, time_point])
+            return data
+        else:
+            pass
 
     def save_all_data(self, name: str = 'data'):
         """
@@ -216,21 +233,28 @@ class Data:
         """
 
         if symbol == 'A':
-            col = 1
+            column = 1
         else:
-            col = 2
+            column = 2
 
-        time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + self.percent_long*one_percent
-        mask2 = future.iloc[:, col] < time_0 - self.percent_long*one_percent
+        stock_time_0 = future.iloc[0, column]
+        profit = future.iloc[:, column] > stock_time_0 + self.percent_long*one_percent
+        loss = future.iloc[:, column] < stock_time_0 - self.percent_long*one_percent
 
-        plus = future.loc[mask1, symbol]
-        minus = future.loc[mask2, symbol]
+        take_profit = future.loc[profit, symbol]
+        stop_loss = future.loc[loss, symbol]
 
-        if not plus.empty and minus.empty:
-            return 1
-        else:
+        if take_profit.empty and stop_loss.empty:
             return 0
+        elif not take_profit.empty and stop_loss.empty:
+            return 1
+        elif take_profit.empty and not stop_loss.empty:
+            return 0
+        elif not take_profit.empty and not stop_loss.empty:
+            if profit.index[0] < loss.index[0]:
+                return 1
+            else:
+                return 0
 
     def short(self, future, symbol: str, one_percent: float) -> int:
         """
@@ -249,17 +273,24 @@ class Data:
         else:
             col = 2
 
-        time_0 = future.iloc[0, col]
-        mask1 = future.iloc[:, col] > time_0 + self.percent_short*one_percent
-        mask2 = future.iloc[:, col] < time_0 - self.percent_short*one_percent
+        stock_time_0 = future.iloc[0, col]
+        profit = future.iloc[:, col] < stock_time_0 + self.percent_short*one_percent
+        loss = future.iloc[:, col] > stock_time_0 - self.percent_short*one_percent
 
-        plus = future.loc[mask1, symbol]
-        minus = future.loc[mask2, symbol]
+        take_profit = future.loc[profit, symbol]
+        stop_loss = future.loc[loss, symbol]
 
-        if not minus.empty and plus.empty:
-            return 1
-        else:
+        if take_profit.empty and stop_loss.empty:
             return 0
+        elif not take_profit.empty and stop_loss.empty:
+            return 1
+        elif take_profit.empty and not stop_loss.empty:
+            return 0
+        elif not take_profit.empty and not stop_loss.empty:
+            if profit.index[0] < loss.index[0]:
+                return 1
+            else:
+                return 0
 
     @staticmethod
     def scale_data(df):

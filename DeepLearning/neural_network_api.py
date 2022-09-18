@@ -23,7 +23,7 @@ def read_data_for_training(copy=False):
         utils.copy_to_one_dir(config.CWD)
     data = DeepLearning.TrainingData(config.CWD)
     data.read_all_data(config.STEPS_BACK, config.STEPS_FORWARD,
-                       config.PERCENT_LONG, config.PERCENT_SHORT, config.INTERVAL)
+                       config.PERCENT_LONG, config.PERCENT_SHORT, config.INTERVAL, config.START_DATE, config.END_DATE)
     data.save_all_data('train_data')
 
 
