@@ -143,10 +143,10 @@ class Data:
                 if '09:00:00' < h_m_s < '14:00:00':
                     future = data_raw.iloc[time:time + self.steps_forward, :].copy()
 
-                    A_future_long = self.long(future, 'A', one_percent)
-                    B_future_long = self.long(future, 'B', one_percent)
-                    A_future_short = self.short(future, 'A', one_percent)
-                    B_future_short = self.short(future, 'B', one_percent)
+                    A_future_long_profit = self.long_profit(future, 'A', one_percent)
+                    B_future_long_profit = self.long_profit(future, 'B', one_percent)
+                    A_future_short_profit = self.short_profit(future, 'A', one_percent)
+                    B_future_short_profit = self.short_profit(future, 'B', one_percent)
 
                     A_past = data_raw.iloc[time - self.steps_back:time, 1].to_frame()
                     B_past = data_raw.iloc[time - self.steps_back:time, 2].to_frame()
@@ -162,10 +162,10 @@ class Data:
                     df_A.reset_index(inplace=True)
                     time_point = pd.concat([df_A, df_B], axis=1, join='outer')
                     time_point.drop(labels='index', axis=1, inplace=True)
-                    time_point['A_long_(y)'] = A_future_long
-                    time_point['B_long_(y)'] = B_future_long
-                    time_point['A_short_(y)'] = A_future_short
-                    time_point['B_short_(y)'] = B_future_short
+                    time_point['A_long_(y)'] = A_future_long_profit
+                    time_point['B_long_(y)'] = B_future_long_profit
+                    time_point['A_short_(y)'] = A_future_short_profit
+                    time_point['B_short_(y)'] = B_future_short_profit
                     data.index.name = 'index'
                     data = pd.concat([data, time_point])
             return data
@@ -220,7 +220,7 @@ class Data:
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
         print("-" * 60)
 
-    def long(self, future, symbol: str, one_percent: float) -> int:
+    def long_profit(self, future, symbol: str, one_percent: float) -> int:
         """
         method to check for win or loss in long position
 
@@ -256,7 +256,7 @@ class Data:
             else:
                 return 0
 
-    def short(self, future, symbol: str, one_percent: float) -> int:
+    def short_profit(self, future, symbol: str, one_percent: float) -> int:
         """
         method to check for win or loss in short position
 
