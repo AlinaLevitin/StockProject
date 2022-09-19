@@ -23,8 +23,8 @@ def read_data_for_training(cwd, copy=False):
     config_dict = DeepLearning.utils.read_config(cwd)
     steps_back = int(config_dict['STEPS_BACK'])
     steps_forward = int(config_dict['STEPS_FORWARD'])
-    percent_long = int(config_dict['PERCENT_LONG'])
-    percent_short = int(config_dict['PERCENT_SHORT'])
+    percent_long = float(config_dict['PERCENT_LONG'])
+    percent_short = float(config_dict['PERCENT_SHORT'])
     interval = int(config_dict['INTERVAL'])
     start_date = int(config_dict['START_DATE'])
     end_date = int(config_dict['END_DATE'])
@@ -60,7 +60,7 @@ def model_opt(cwd):
     training_data.split_data(test_data_portion, val_data_portion)
     print("=" * 60)
     #
-    REPEATS = 3
+    REPEATS = 1
     #
     all_summary = pd.DataFrame()
     print(f'Commencing model optimization for {REPEATS} repeats')
@@ -69,7 +69,7 @@ def model_opt(cwd):
         epochs = int(config_dict['EPOCHS'])
         learning_rate = float(config_dict['LEARNING_RATE'])
         batch_size = int(config_dict['BATCH_SIZE'])
-        neurons = 100 * i
+        neurons = 500 * i
         repeat_train = DeepLearning.ModelOpt(cwd)
         result = repeat_train.repeat_train(training_data, REPEATS, neurons, epochs, learning_rate, batch_size)
         all_summary = pd.concat([all_summary, result])

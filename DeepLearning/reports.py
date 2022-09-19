@@ -51,14 +51,10 @@ class Reports:
         :param accuracy: float or list of accuracy after training
         """
 
-        neurons = self.model \
-            .get_neurons()
-        epochs = self.model \
-            .get_epochs()
-        learning_rate = self.model \
-            .get_learning_rate()
-        batch_size = self.model \
-            .get_batch_size()
+        neurons = self.model.neurons
+        epochs = self.model.epochs
+        learning_rate = self.model.learning_rate
+        batch_size = self.model.batch_size
 
         summary_dict = {'test accuracy': accuracy,
                         'training data': self.data.train_num,
@@ -90,14 +86,10 @@ class Reports:
         accuracy_average = DeepLearning.dl_utils.average(accuracy)
         stddev = DeepLearning.dl_utils.stddev(accuracy)
 
-        neurons = self.model \
-            .get_neurons()
-        epochs = self.model \
-            .get_epochs()
-        learning_rate = self.model \
-            .get_learning_rate()
-        batch_size = self.model \
-            .get_batch_size()
+        neurons = self.model.neurons
+        epochs = self.model.epochs
+        learning_rate = self.model.learning_rate
+        batch_size = self.model.batch_size
 
         summary_dict = {'average test accuracy': accuracy_average,
                         'STDEV': stddev,
@@ -150,8 +142,7 @@ class Reports:
         :param accuracy: float returned from train_and_test, first item in the tuple
         :param acc_and_loss: pandas DataFrame returned from train_and_test, second item in the tuple
         """
-        neurons = self.model \
-            .get_neurons()
+        neurons = self.model.neurons
         gmt = time.gmtime()
         time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
         path = self.cwd + f"\\model_opt\\reports\\{neurons}_neurons"

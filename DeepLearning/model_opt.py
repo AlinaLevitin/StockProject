@@ -46,7 +46,7 @@ class ModelOpt:
         """
         model = DeepLearning.Model(self.cwd)
         model.set_model(data, neurons, epochs, learning_rate, batch_size)
-        model.get_summary()
+        model.model.summary()
         os.makedirs(self.cwd + "\\model_opt", exist_ok=True)
         os.chdir(self.cwd + "\\model_opt")
         model.model.save_weights('model.h5')

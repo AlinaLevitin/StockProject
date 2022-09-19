@@ -1,7 +1,6 @@
 """
 main file to read data, train the neural network and predict results
 """
-# TODO try reading the config
 import os
 
 import DeepLearning
@@ -15,13 +14,13 @@ for more efficient data reading (do this once then change to copy=False)
 this will create a data.csv file with all the data for training.
 """
 
-# DeepLearning.neural_network_api.model_opt(CWD)
+DeepLearning.neural_network_api.model_opt(CWD)
 """
 Use this to optimize the neural network with reduced data volume to 20%.
 Optimize layers, activation functions and number or neuron
 """
 
-DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=False)
+# DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=False)
 """
 Use this to train the neural network either from a callback or saved trained neural network.
 * choose from_save=True to continue training from trained_neural_network.h5 file.

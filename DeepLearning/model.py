@@ -74,18 +74,6 @@ class Model:
         return f"neurons: {self.neurons}, epochs: {self.epochs}," \
                f"learning rate: {self.learning_rate}, batch size: {self.batch_size} "
 
-    def get_neurons(self):
-        return self.neurons
-
-    def get_epochs(self):
-        return self.epochs
-
-    def get_learning_rate(self):
-        return self.learning_rate
-
-    def get_batch_size(self):
-        return self.batch_size
-
     def get_summary(self):
         self.model.summary()
 
@@ -110,19 +98,19 @@ class Model:
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
-            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+            # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dropout(.2),
+            # tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
+            # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation='elu'),
-            tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
+            # tf.keras.layers.Dropout(.2),
+            # tf.keras.layers.Dense(self.neurons, activation='relu'),
+            # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
+            # tf.keras.layers.Dense(self.neurons, activation='relu'),
+            # tf.keras.layers.Dropout(.2),
+            # tf.keras.layers.Dense(self.neurons, activation='relu'),
+            # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(4, activation='sigmoid')]
         )
 

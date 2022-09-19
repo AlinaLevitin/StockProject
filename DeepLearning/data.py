@@ -140,7 +140,7 @@ class Data:
             for time in range(self.steps_back, shrink_dataframe, self.interval):
                 time_stamp = data_raw.loc[time, 'time']
                 h_m_s = time_stamp.split(' ')[1]
-                if '09:00:00' < h_m_s < '14:00:00':
+                if '10:00:00' < h_m_s < '14:00:00':
                     future = data_raw.iloc[time:time + self.steps_forward, :].copy()
 
                     A_future_long_profit = self.long_profit(future, 'A', one_percent)
