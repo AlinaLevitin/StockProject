@@ -3,7 +3,6 @@ Supporting file containing utility functions
 """
 import os
 from _csv import reader
-from csv import DictReader
 
 import pandas as pd
 import glob
@@ -13,6 +12,7 @@ import shutil
 def open_csv(cwd: str, file_name: str):
     """
     open a csv using pandas
+
     :param cwd: current working directory using cwd = os.getcwd()
     :param file_name: the name of the file
     :return: DataFrame
@@ -25,6 +25,7 @@ def open_csv(cwd: str, file_name: str):
 def save_to_csv(name: str, data, path: str):
     """
     save to csv file using pandas
+
     :param name: name for the file
     :param data: the data to save in a form of pandas DataFrame
     :type data: pandas DataFrame
@@ -40,6 +41,7 @@ def save_to_csv(name: str, data, path: str):
 def copy_to_one_dir(cwd: str):
     """
     copies all csv files in one directory, this saves time when reading the data
+
     :param cwd: current working directory using cwd = os.getcwd()
     :return: copies all csv files in one directory
     """
@@ -61,6 +63,12 @@ def copy_to_one_dir(cwd: str):
 
 
 def read_config(cwd: str) -> dict:
+    """
+    reading the config file from config.csv
+
+    :param cwd: current working directory the config file should be present here
+    :return: dictionary with all parameters from the config
+    """
     os.chdir(cwd)
     config_list = []
     with open('config.csv') as file:

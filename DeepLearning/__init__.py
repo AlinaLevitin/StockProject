@@ -21,7 +21,3 @@ from .utils import read_config
 
 from .neural_network_api import open_data_and_train
 from .neural_network_api import predict_results
-
-
-
-

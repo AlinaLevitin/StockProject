@@ -67,11 +67,13 @@ class Data:
 
     def __repr__(self):
         """
-        :return: parameters of object number of data points, steps back, steps forward, percent and interval
+        :return: parameters of object number of data points, steps back, steps forward, percent, interval,
+                start date and end date.
         """
         return f"number of data points : {self.data.shape[0]}, " \
                f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
-               f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}"
+               f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}"\
+               f"start_date: {self.start_date}, end_date: {self.end_date}"
 
     def read_all_data(self, steps_back: int, steps_forward: int,
                       percent_long: float, percent_short: float, interval: int,
@@ -85,8 +87,8 @@ class Data:
         :param percent_short: percent as the threshold for win or loss outcome
         :param percent_long: percent as the threshold for win or loss outcome
         :param interval: interval between time points collected
-        :param end_date:
-        :param start_date:
+        :param end_date: date in which to start reading files
+        :param start_date: date in which to end reading files
 
         :return: pandas DataFrame with the input and targets for deep learning
         """
@@ -101,19 +103,25 @@ class Data:
 
         all_data = pd.DataFrame()
         print('-' * 60)
-        print('-' * 60)
-        print('Reading all files in all_hist folder')
+        print(f'Reading all files in all_hist folder between {self.start_date} and {self.end_date}')
         print('-' * 60)
         analysis_hist = self.cwd + "\\all_hist"
+        os.makedirs(analysis_hist, exist_ok=True)
         files = os.listdir(analysis_hist)
-        for file in files:
-            os.chdir(analysis_hist)
-            data = self.read_and_get_values(file)
-            all_data = pd.concat([all_data, data])
-            print(f"analyzed {file}")
+        if not files:
+            raise FileNotFoundError('all_hist folder is empty,'
+                                    'please copy all files to all_hist folder using copy_to_one_dir method')
+        else:
+            for file in files:
+                os.chdir(analysis_hist)
+                data = self.read_and_get_values(file)
+                all_data = pd.concat([all_data, data])
+
         all_data.reset_index(drop=True, inplace=True)
         print('-' * 60)
         print('Finished reading files')
+        print('-' * 60)
+        print(self)
         print('-' * 60)
         self.data = all_data
 
@@ -127,6 +135,7 @@ class Data:
         :return: pandas DataFrame
             input and targets for one instance
         """
+        data = pd.DataFrame()
 
         one_percent = float(file.split('_')[-1].replace('.csv', ''))
         date = int(file.split('_')[2])
@@ -134,22 +143,20 @@ class Data:
             data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
             shrink_dataframe = int(data_raw.shape[0] - self.steps_forward)
 
-            data = pd.DataFrame()
-
             # Finding the result for each time point
-            for time in range(self.steps_back, shrink_dataframe, self.interval):
-                time_stamp = data_raw.loc[time, 'time']
+            for index in range(self.steps_back, shrink_dataframe, self.interval):
+                time_stamp = data_raw.loc[index, 'time']
                 h_m_s = time_stamp.split(' ')[1]
                 if '10:00:00' < h_m_s < '14:00:00':
-                    future = data_raw.iloc[time:time + self.steps_forward, :].copy()
+                    future = data_raw.iloc[index:index + self.steps_forward, :].copy()
 
                     A_future_long_profit = self.long_profit(future, 'A', one_percent)
                     B_future_long_profit = self.long_profit(future, 'B', one_percent)
                     A_future_short_profit = self.short_profit(future, 'A', one_percent)
                     B_future_short_profit = self.short_profit(future, 'B', one_percent)
 
-                    A_past = data_raw.iloc[time - self.steps_back:time, 1].to_frame()
-                    B_past = data_raw.iloc[time - self.steps_back:time, 2].to_frame()
+                    A_past = data_raw.iloc[index - self.steps_back:index, 1].to_frame()
+                    B_past = data_raw.iloc[index - self.steps_back:index, 2].to_frame()
                     df_A = A_past.T
                     df_B = B_past.T
                     A_len = df_A.shape[1]
@@ -168,9 +175,8 @@ class Data:
                     time_point['B_short_(y)'] = B_future_short_profit
                     data.index.name = 'index'
                     data = pd.concat([data, time_point])
+            print(f"analyzed {file}")
             return data
-        else:
-            pass
 
     def save_all_data(self, name: str = 'data'):
         """
@@ -185,7 +191,8 @@ class Data:
 
         DeepLearning.utils.save_to_csv(name, self.data, self.cwd)
         params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent_long': self.percent_long,
-                  'percent_short': self.percent_short, 'interval': self.interval}
+                  'percent_short': self.percent_short, 'interval': self.interval,
+                  'start_date': self.start_date, 'end_date': self.end_date}
         json_save = json.dumps(params)
         with open(f'params_{name}.json', 'w') as json_file:
             json_file.write(json_save)
@@ -213,10 +220,10 @@ class Data:
         self.percent_long = params['percent_long']
         self.percent_short = params['percent_short']
         self.interval = params['interval']
+        # self.start_date = params['start_date']
+        # self.end_date = params['end_date']
         self.data = data
-        print(f"number of data points : {self.data.shape[0]}, "
-              f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, "
-              f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}")
+        print(self)
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
         print("-" * 60)
 

@@ -16,7 +16,7 @@ this will create a data.csv file with all the data for training.
 
 DeepLearning.neural_network_api.model_opt(CWD)
 """
-Use this to optimize the neural network with reduced data volume to 20%.
+Use this to optimize the neural network with reduced data volume to 40%.
 Optimize layers, activation functions and number or neuron
 """
 

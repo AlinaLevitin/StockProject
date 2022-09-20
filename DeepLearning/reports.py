@@ -31,7 +31,7 @@ class Reports:
         generates a summary as pandas DataFrame
     repeat_train_summary(self, accuracy, path: str=None)
         generates a summary as pandas DataFrame
-    train_report(self, accuracy, acc_and_loss)
+    single_train_report(self, accuracy, acc_and_loss)
         Generates an Excel file after training a model
     repeat_train_report(self, i, accuracy, acc_and_loss)
         Generates an Excel file after training a model in a repeat train
@@ -114,7 +114,7 @@ class Reports:
             print('+' * 60)
         return summary
 
-    def train_report(self, accuracy, acc_and_loss):
+    def single_train_report(self, accuracy, acc_and_loss):
         """
         Generates an Excel file after training a model
 

@@ -69,7 +69,7 @@ def model_opt(cwd):
         epochs = int(config_dict['EPOCHS'])
         learning_rate = float(config_dict['LEARNING_RATE'])
         batch_size = int(config_dict['BATCH_SIZE'])
-        neurons = 500 * i
+        neurons = 1000 * i
         repeat_train = DeepLearning.ModelOpt(cwd)
         result = repeat_train.repeat_train(training_data, REPEATS, neurons, epochs, learning_rate, batch_size)
         all_summary = pd.concat([all_summary, result])
@@ -139,7 +139,7 @@ def open_data_and_train(cwd, from_save=True):
         accuracy = result[0]
         acc_and_loss = result[1]
         report = DeepLearning.Reports(cwd, training_data, model)
-        report.train_report(accuracy, acc_and_loss)
+        report.single_train_report(accuracy, acc_and_loss)
         model.save_model('trained_neural_network')
     except (Exception,):
         raise FileExistsError('Unable to start training,'
