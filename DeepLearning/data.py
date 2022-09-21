@@ -72,7 +72,7 @@ class Data:
         """
         return f"number of data points : {self.data.shape[0]}, " \
                f"steps_back: {self.steps_back}, steps_forward: {self.steps_forward}, " \
-               f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}"\
+               f"percent_long: {self.percent_long}, percent_short: {self.percent_short}, interval: {self.interval}, "\
                f"start_date: {self.start_date}, end_date: {self.end_date}"
 
     def read_all_data(self, steps_back: int, steps_forward: int,
@@ -307,5 +307,5 @@ class Data:
         :param df: pandas DataFrame of inputs
         :return: pandas DataFrame with data ranging between -1 and 1
         """
-
+        print(f'{df} was scaled')
         return (df - df.min()) / (df.max() - df.min())
