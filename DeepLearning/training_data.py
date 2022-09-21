@@ -81,16 +81,17 @@ class TrainingData(Data):
         :param validation: portion of the validation data
         """
 
-        self.x = self.data.iloc[:, :-4]
-        self.y = self.data.iloc[:, -4:]
+        x = self.data.iloc[:, :-4]
+        scaled_x = self.scale_data(x)
+        y = self.data.iloc[:, -4:]
+
+        self.x = scaled_x
+        self.y = y
 
         x_train_and_val, x_test, y_train_and_val, y_test = train_test_split(self.x, self.y, test_size=test,
                                                                             random_state=42)
         x_train, x_val, y_train, y_val = train_test_split(x_train_and_val, y_train_and_val, test_size=validation,
                                                           random_state=42)
-        x_train = self.scale_data(x_train)
-        x_val = self.scale_data(x_val)
-        x_test = self.scale_data(x_test)
 
         self.x_train = x_train
         self.x_val = x_val
@@ -112,3 +113,4 @@ class TrainingData(Data):
         drop_indices = np.random.choice(self.data.index, remove_n, replace=True)
         df_subset = self.data.drop(drop_indices)
         self.data = df_subset
+        print(f'Data volume was reduced by {portion * 100}%')

@@ -97,31 +97,37 @@ class Model:
         input_shape = self.data.input_shape
 
         self.model = tf.keras.models.Sequential([
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.tanh, input_shape=(input_shape,)),
+            tf.keras.layers.Dense(self.neurons, activation='tanh', input_shape=(input_shape,)),
             # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # # tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # # tf.keras.layers.Dropout(.2),
-            tf.keras.layers.Dense(self.neurons, activation=tf.nn.relu),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
+            tf.keras.layers.Dense(self.neurons, activation='relu'),
             # tf.keras.layers.Dense(self.neurons, activation='elu', kernel_regularizer='l2'),
             tf.keras.layers.Dense(4, activation='sigmoid')]
         )
 
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
-                           loss="mse",
+                           loss='binary_crossentropy',
                            metrics=['accuracy'])
         return self.model
 

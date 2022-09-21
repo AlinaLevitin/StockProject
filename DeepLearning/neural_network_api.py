@@ -69,7 +69,7 @@ def model_opt(cwd):
         epochs = int(config_dict['EPOCHS'])
         learning_rate = float(config_dict['LEARNING_RATE'])
         batch_size = int(config_dict['BATCH_SIZE'])
-        neurons = 1000 * i
+        neurons = 2000 * i
         repeat_train = DeepLearning.ModelOpt(cwd)
         result = repeat_train.repeat_train(training_data, REPEATS, neurons, epochs, learning_rate, batch_size)
         all_summary = pd.concat([all_summary, result])
