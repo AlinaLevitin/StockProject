@@ -45,7 +45,7 @@ def copy_to_one_dir(cwd: str):
     :param cwd: current working directory using cwd = os.getcwd()
     :return: copies all csv files in one directory
     """
-    analysis_hist = glob.glob(cwd + "\\analysis_hist")
+    analysis_hist = glob.glob(cwd + "\\analysis_hist\\analysis_hist")
     date_folders = glob.glob(analysis_hist[0] + "\\*")
     new_folder = cwd + "\\all_hist"
     os.makedirs(new_folder, exist_ok=True)
@@ -78,4 +78,3 @@ def read_config(cwd: str) -> dict:
             config_list.append(row)
     config = {item[0]: item[1] for item in config_list}
     return config
-

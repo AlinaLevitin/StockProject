@@ -1,3 +1,4 @@
+# TODO add test_accuracy methode to see if model is relevant or needs re-training
 """
 API to read the data, train the neural network and predict results
 """
@@ -144,6 +145,47 @@ def open_data_and_train(cwd, from_save=True):
     except (Exception,):
         raise FileExistsError('Unable to start training,'
                               'please delete previous callback or trained_neural_network.h5 and retry')
+
+
+def test_accuracy(cwd, copy=False):
+    os.chdir(cwd)
+    config_dict = DeepLearning.utils.read_config(cwd)
+    steps_back = int(config_dict['STEPS_BACK'])
+    steps_forward = int(config_dict['STEPS_FORWARD'])
+    percent_long = float(config_dict['PERCENT_LONG'])
+    percent_short = float(config_dict['PERCENT_SHORT'])
+    interval = int(config_dict['INTERVAL'])
+    start_date = int(config_dict['START_DATE'])
+    end_date = int(config_dict['END_DATE'])
+
+    if copy:
+        DeepLearning.utils.copy_to_one_dir(cwd)
+
+    data = DeepLearning.TrainingData(cwd)
+
+    try:
+        data.open_all_data('test_accuracy_data')
+    except:
+        data.read_all_data(steps_back, steps_forward,
+                           percent_long, percent_short, interval, start_date, end_date)
+        data.save_all_data('test_accuracy_data')
+
+    data.set_x_and_y()
+
+    model = DeepLearning.Model(cwd)
+    print('=' * 60)
+    model.load_model('trained_neural_network')
+    print('=' * 60)
+
+    try:
+        accuracy = model.test_model(data)
+    except (Exception,):
+        raise FileExistsError('Unable to start testing,'
+                              'there are no data to test try different start_date or end_date')
+
+    report = DeepLearning.Reports(cwd, data, model)
+    summary = report.single_train_summary(accuracy)
+    DeepLearning.utils.save_to_csv('accuracy_test', summary, cwd + '\\reports')
 
 
 def predict_results(cwd):

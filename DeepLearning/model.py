@@ -211,6 +211,13 @@ class Model:
         print(f'Loading model from file: {name}.h5')
         print('-' * 60)
 
+    def test_model(self, data):
+        self.data = data
+        print('Testing accuracy of neural network')
+        result = self.model.evaluate(self.data.x, self.data.y)
+        accuracy = result[1]
+        return accuracy
+
     def predict_values(self, data):
         """
         predicting results

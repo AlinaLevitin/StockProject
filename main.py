@@ -20,12 +20,20 @@ Use this to optimize the neural network with reduced data volume to 40%.
 Optimize layers, activation functions and number or neuron
 """
 
-DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=False)
+# DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=True)
 """
 Use this to train the neural network either from a callback or saved trained neural network.
 * choose from_save=True to continue training from trained_neural_network.h5 file.
 * choose from_save=False to train from a callback or create a new neural network (make sure to delete previous 
   callbacks and trained_neural_network.h5).
+"""
+
+DeepLearning.neural_network_api.test_accuracy(CWD)
+"""
+Use this to test the accuracy of a trained model.
+In the config choose the dates you want to test (I suggest no more than two months since it takes 
+a long time to read the data)
+This will result a csv file named: accuracy_test_{current time and date}.csv in reports folder. 
 """
 
 # DeepLearning.neural_network_api.predict_results(CWD)

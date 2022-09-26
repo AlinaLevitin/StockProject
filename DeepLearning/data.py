@@ -121,8 +121,6 @@ class Data:
         print('-' * 60)
         print('Finished reading files')
         print('-' * 60)
-        print(self)
-        print('-' * 60)
         self.data = all_data
 
     def read_and_get_values(self, file: str):
@@ -220,8 +218,8 @@ class Data:
         self.percent_long = params['percent_long']
         self.percent_short = params['percent_short']
         self.interval = params['interval']
-        # self.start_date = params['start_date']
-        # self.end_date = params['end_date']
+        self.start_date = params['start_date']
+        self.end_date = params['end_date']
         self.data = data
         print(self)
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
@@ -307,5 +305,5 @@ class Data:
         :param df: pandas DataFrame of inputs
         :return: pandas DataFrame with data ranging between -1 and 1
         """
-        print(f'{df} was scaled')
+        print(f'Data was scaled')
         return (df - df.min()) / (df.max() - df.min())
