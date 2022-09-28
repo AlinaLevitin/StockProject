@@ -101,25 +101,27 @@ class Model:
             # tf.keras.layers.Dense(self.neurons, activation='relu',
             # kernel_regularizer=tf.keras.regularizers.l2(0.001)),
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 1
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 2
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 2
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 3
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 4
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 4
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 5
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 6
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 6
             # tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 7
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 8
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 8
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 9
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 10
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 10
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 11
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 12
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 12
             # tf.keras.layers.Dropout(.2),
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 13
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 14
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 14
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 15
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 16
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 16
             tf.keras.layers.Dense(self.neurons, activation='relu'),  # 17
-            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 18
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 18
+            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 19
+            tf.keras.layers.Dense(self.neurons, activation='elu'),  # 20
             tf.keras.layers.Dense(4, activation='sigmoid')]
         )
 

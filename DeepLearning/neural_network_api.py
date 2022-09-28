@@ -1,4 +1,3 @@
-# TODO add test_accuracy methode to see if model is relevant or needs re-training
 """
 API to read the data, train the neural network and predict results
 """
@@ -182,10 +181,12 @@ def test_accuracy(cwd, copy=False):
     except (Exception,):
         raise FileExistsError('Unable to start testing,'
                               'there are no data to test try different start_date or end_date')
-
+    gmt = time.gmtime()
+    time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
+    test_accuracy_data_file = f'test_accuracy_data_{time_stamp}'
     report = DeepLearning.Reports(cwd, data, model)
     summary = report.single_train_summary(accuracy)
-    DeepLearning.utils.save_to_csv('accuracy_test', summary, cwd + '\\reports')
+    DeepLearning.utils.save_to_csv(test_accuracy_data_file, summary, cwd + '\\reports')
 
 
 def predict_results(cwd):

@@ -37,12 +37,10 @@ class Reports:
         Generates an Excel file after training a model in a repeat train
     """
 
-    def __init__(self, cwd: str, data, model
-                 ):
+    def __init__(self, cwd: str, data, model):
         self.cwd = cwd
         self.data = data
-        self.model \
-            = model
+        self.model = model
 
     def single_train_summary(self, accuracy):
         """
@@ -51,21 +49,21 @@ class Reports:
         :param accuracy: float or list of accuracy after training
         """
 
-        neurons = self.model.neurons
-        epochs = self.model.epochs
-        learning_rate = self.model.learning_rate
-        batch_size = self.model.batch_size
-
         summary_dict = {'test accuracy': accuracy,
+                        'data': self.data.data_num,
+                        'start date': self.data.start_date,
+                        'end date': self.data.end_date,
                         'training data': self.data.train_num,
                         'validation data': self.data.val_num,
                         'test data': self.data.test_num,
+                        'percent_long': self.data.percent_long,
+                        'percent_short': self.data.percent_short,
                         'steps back': self.data.steps_back,
                         'steps forward': self.data.steps_forward,
-                        'batch_size': batch_size,
-                        'epochs': epochs,
-                        'neurons': neurons,
-                        'learning_rate': learning_rate,
+                        'batch_size': self.model.batch_size,
+                        'epochs': self.model.epochs,
+                        'neurons': self.model.neurons,
+                        'learning_rate': self.model.learning_rate,
                         }
         summary = pd.DataFrame([summary_dict])
         return summary
@@ -86,23 +84,23 @@ class Reports:
         accuracy_average = DeepLearning.dl_utils.average(accuracy)
         stddev = DeepLearning.dl_utils.stddev(accuracy)
 
-        neurons = self.model.neurons
-        epochs = self.model.epochs
-        learning_rate = self.model.learning_rate
-        batch_size = self.model.batch_size
-
         summary_dict = {'average test accuracy': accuracy_average,
                         'STDEV': stddev,
                         'repeats': repeats,
+                        'data': self.data.data_num,
+                        'start date': self.data.start_date,
+                        'end date': self.data.end_date,
                         'training data': self.data.train_num,
                         'validation data': self.data.val_num,
                         'test data': self.data.test_num,
+                        'percent_long': self.data.percent_long,
+                        'percent_short': self.data.percent_short,
                         'steps back': self.data.steps_back,
                         'steps forward': self.data.steps_forward,
-                        'batch_size': batch_size,
-                        'epochs': epochs,
-                        'neurons': neurons,
-                        'learning_rate': learning_rate,
+                        'batch_size': self.model.batch_size,
+                        'epochs': self.model.epochs,
+                        'neurons': self.model.neurons,
+                        'learning_rate': self.model.learning_rate,
                         }
         summary = pd.DataFrame([summary_dict])
         if path:

@@ -1,7 +1,6 @@
 """
 Data class to handle csv time-point data sets and convert them to pandas Dataframes
 """
-# TODO rewrite methods to be more clear
 import os
 import json
 
@@ -64,6 +63,7 @@ class Data:
         self.percent_short = None
         self.interval = None
         self.data = None
+        self.data_num = None
 
     def __repr__(self):
         """
@@ -122,6 +122,7 @@ class Data:
         print('Finished reading files')
         print('-' * 60)
         self.data = all_data
+        self.data_num = self.data.shape[0]
 
     def read_and_get_values(self, file: str):
         """
@@ -188,7 +189,7 @@ class Data:
         """
 
         DeepLearning.utils.save_to_csv(name, self.data, self.cwd)
-        params = {'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent_long': self.percent_long,
+        params = {'data_num': self.data_num, 'steps_back': self.steps_back, 'steps_forward': self.steps_forward, 'percent_long': self.percent_long,
                   'percent_short': self.percent_short, 'interval': self.interval,
                   'start_date': self.start_date, 'end_date': self.end_date}
         json_save = json.dumps(params)
@@ -221,6 +222,7 @@ class Data:
         self.start_date = params['start_date']
         self.end_date = params['end_date']
         self.data = data
+        self.data_num = params['data_num']
         print(self)
         print(f'opened the data from {name}.csv and the parameters from params_{name}.json')
         print("-" * 60)

@@ -1,5 +1,5 @@
 Parameter,Value,Comments
-START_DATE,20200405,Starting date for training period
+START_DATE,20200200,Starting date for training period
 END_DATE,20211200,Ending date for training period
 STEPS_BACK,10,Timepoints before taking position for training
 STEPS_FORWARD,10,Timepoints after taking position as the outcome for training
