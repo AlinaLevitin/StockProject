@@ -1,3 +1,4 @@
+# TODO : document get_summery and test_model
 """
 Model class to generate a neural network
 This class allows training, saving, loading and using the model to predict results

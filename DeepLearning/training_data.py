@@ -1,3 +1,4 @@
+# TODO: document reduce_data and set_x_and_y
 """
 TrainingData class inherits from Data class to split the data to train, validation and test
 for deep learning

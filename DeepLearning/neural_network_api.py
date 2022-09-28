@@ -1,3 +1,4 @@
+# TODO: document test_accuracy
 """
 API to read the data, train the neural network and predict results
 """
@@ -164,7 +165,10 @@ def test_accuracy(cwd, copy=False):
 
     try:
         data.open_all_data('test_accuracy_data')
-    except:
+    except (Exception,):
+        print('=' * 60)
+        print('No data to load, now collecting data')
+        print('=' * 60)
         data.read_all_data(steps_back, steps_forward,
                            percent_long, percent_short, interval, start_date, end_date)
         data.save_all_data('test_accuracy_data')
