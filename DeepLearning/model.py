@@ -76,6 +76,11 @@ class Model:
                f"learning rate: {self.learning_rate}, batch size: {self.batch_size} "
 
     def get_summary(self):
+        """
+        using tensorflow summary() method to describe the model architecture
+
+        :return: tensorflow summary
+        """
         self.model.summary()
 
     def set_model(self, data, neurons: int, epochs: int, learning_rate: float, batch_size: int):
@@ -135,12 +140,14 @@ class Model:
         """
         train and test the model
 
-        :param data: make sure to split the data using TrainingData class method split_data :type data: TrainingData
+        :param data: make sure to split the data using TrainingData class method split_data
+        :type data: TrainingData
         :param save: optional to save callbacks of the neural network every epoch, will create new folder in case its
                      missing
 
         :return: accuracy of testing data, and history pandas dataframe
         """
+        # tf.test_is_gpu_available()
 
         self.data = data
 
@@ -215,6 +222,12 @@ class Model:
         print('-' * 60)
 
     def test_model(self, data):
+        """
+        testing the relevant accuracy of the model on new data
+
+        :param data: pandas dataframe
+        :return:
+        """
         self.data = data
         print('Testing accuracy of neural network')
         result = self.model.evaluate(self.data.x, self.data.y)
@@ -223,7 +236,7 @@ class Model:
 
     def predict_values(self, data):
         """
-        predicting results
+        predicting results on chosen data
 
         :param data: PredictData
         :return: numpy array of the predicted results
