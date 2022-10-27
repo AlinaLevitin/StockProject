@@ -96,7 +96,6 @@ def open_data_and_train(cwd, from_save=True):
                     (make sure to delete previous callbacks and trained_neural_network.h5)
     """
     os.chdir(cwd)
-    tf.config.list_physical_devices()
     config_dict = DeepLearning.utils.read_config(cwd)
     test_data_portion = float(config_dict['TEST_DATA'])
     val_data_portion = float(config_dict['VALIDATION_DATA'])
