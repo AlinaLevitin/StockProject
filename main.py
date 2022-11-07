@@ -7,7 +7,7 @@ import DeepLearning
 
 CWD = os.getcwd()
 
-DeepLearning.neural_network_api.read_data_for_training(CWD, copy=True)
+DeepLearning.neural_network_api.read_data_for_training(CWD, copy=False)
 """
 Use this method when reading the analysis_hist, copy=True will copy all csv files to one folder
 for more efficient data reading (do this once then change to copy=False)
