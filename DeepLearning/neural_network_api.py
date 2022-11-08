@@ -61,7 +61,7 @@ def model_opt(cwd):
     training_data.split_data(test_data_portion, val_data_portion)
     print("=" * 60)
     #
-    REPEATS = 1
+    REPEATS = 3
     #
     all_summary = pd.DataFrame()
     print(f'Commencing model optimization for {REPEATS} repeats')
@@ -70,7 +70,7 @@ def model_opt(cwd):
         epochs = int(config_dict['EPOCHS'])
         learning_rate = float(config_dict['LEARNING_RATE'])
         batch_size = int(config_dict['BATCH_SIZE'])
-        neurons = 2000 * i
+        neurons = 200 * i
         repeat_train = DeepLearning.ModelOpt(cwd)
         result = repeat_train.repeat_train(training_data, REPEATS, neurons, epochs, learning_rate, batch_size)
         all_summary = pd.concat([all_summary, result])

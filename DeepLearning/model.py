@@ -127,7 +127,7 @@ class Model:
             # tf.keras.layers.Dense(self.neurons, activation='relu'),  # 17
             # tf.keras.layers.Dense(self.neurons, activation='elu'),  # 18
             # tf.keras.layers.Dense(self.neurons, activation='relu'),  # 19
-            tf.keras.layers.Dense(self.neurons, activation='sigmoid'),  # 20
+            tf.keras.layers.Dense(self.neurons, activation='relu'),  # 20
             tf.keras.layers.Dense(4, activation='sigmoid')]
         )
 
@@ -136,14 +136,16 @@ class Model:
                            metrics=['accuracy'])
         return self.model
 
-    def train_and_test(self, data, save: bool = True):
+    def train_and_test(self, data, save: bool = True, verbose: int =1):
         """
         train and test the model
+
 
         :param data: make sure to split the data using TrainingData class method split_data
         :type data: TrainingData
         :param save: optional to save callbacks of the neural network every epoch, will create new folder in case its
                      missing
+        :param verbose: translates to tensorflow verbose
 
         :return: accuracy of testing data, and history pandas dataframe
         """
@@ -162,7 +164,7 @@ class Model:
                                  epochs=self.epochs,
                                  validation_data=(self.data.x_val, self.data.y_val),
                                  batch_size=self.batch_size, callbacks=callbacks,
-                                 verbose=1
+                                 verbose=verbose
                                  )
         epochs = [i for i in range(1, self.epochs + 1)]
         acc = history.history['accuracy']

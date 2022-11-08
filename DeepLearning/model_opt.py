@@ -58,7 +58,7 @@ class ModelOpt:
             print('-' * 60)
             os.chdir(self.cwd + "\\model_opt")
             model.model.load_weights('model.h5')
-            result = model.train_and_test(data, save=False)
+            result = model.train_and_test(data, save=False, verbose=0)
             accuracy = result[0]
             acc_and_loss = result[1]
             acc.append(accuracy)
