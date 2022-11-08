@@ -57,7 +57,7 @@ def model_opt(cwd):
 
     training_data = DeepLearning.TrainingData(cwd)
     training_data.open_all_data('train_data')
-    training_data.reduce_data(0.4)
+    training_data.reduce_data(0.2)
     training_data.split_data(test_data_portion, val_data_portion)
     print("=" * 60)
     #
