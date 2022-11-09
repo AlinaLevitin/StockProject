@@ -7,7 +7,7 @@ import DeepLearning
 
 CWD = os.getcwd()
 
-# DeepLearning.neural_network_api.read_data_for_training(CWD, copy=False)
+DeepLearning.neural_network_api.read_data_for_training(CWD, copy=False)
 """
 Use this method when reading the analysis_hist, copy=True will copy all csv files to one folder
 for more efficient data reading (do this once then change to copy=False)
@@ -20,7 +20,7 @@ Use this to optimize the neural network with reduced data volume to 40%.
 Optimize layers, activation functions and number or neuron
 """
 
-DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=True)
+DeepLearning.neural_network_api.open_data_and_train(CWD, from_save=False)
 """
 Use this to train the neural network either from a callback or saved trained neural network.
 * choose from_save=True to continue training from trained_neural_network.h5 file.

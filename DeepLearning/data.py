@@ -240,13 +240,13 @@ class Data:
         """
 
         if symbol == 'A':
-            column = 1
+            col = 1
         else:
-            column = 2
+            col = 2
 
-        stock_time_0 = future.iloc[0, column]
-        profit = future.iloc[:, column] > stock_time_0 + self.percent_long*one_percent
-        loss = future.iloc[:, column] < stock_time_0 - self.percent_long*one_percent
+        stock_time_0 = future.iloc[0, col]
+        profit = future.iloc[:, col] > stock_time_0 + self.percent_long*one_percent
+        loss = future.iloc[:, col] < stock_time_0 - self.percent_long*one_percent
 
         take_profit = future.loc[profit, symbol]
         stop_loss = future.loc[loss, symbol]
@@ -281,8 +281,8 @@ class Data:
             col = 2
 
         stock_time_0 = future.iloc[0, col]
-        profit = future.iloc[:, col] < stock_time_0 + self.percent_short*one_percent
-        loss = future.iloc[:, col] > stock_time_0 - self.percent_short*one_percent
+        profit = future.iloc[:, col] < stock_time_0 - self.percent_short*one_percent
+        loss = future.iloc[:, col] > stock_time_0 + self.percent_short*one_percent
 
         take_profit = future.loc[profit, symbol]
         stop_loss = future.loc[loss, symbol]
