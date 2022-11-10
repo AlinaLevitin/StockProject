@@ -157,7 +157,7 @@ class Reports:
             acc_and_loss.to_excel(writer, sheet_name=f'acc_and_loss')
         print(f'report saved to {file}.xlsx in {path} folder')
 
-    def confusion_matrix(self):
+    def confusion_matrix(self, x, y):
         """
         confusion matrix function
 
@@ -170,13 +170,16 @@ class Reports:
         # make predictions on the input
         print('Preparing confusion matrix')
         print('=' * 60)
-        y_pred = self.model.model.predict(self.data.x_test)
+        y_pred = self.model.model.predict(x)
+
+        text_labels = ['A_long', 'B_long', 'A_short', 'B_short']
 
         # make confusion matrix
-        cm = multilabel_confusion_matrix(self.data.y_test, y_pred.round(0))
+        cm = multilabel_confusion_matrix(y, y_pred.round(0))
 
         # set fig size
-        figsize = (10, 10)
+        figsize = (15, 15)
+        fontsize = 15
 
         # Create the confusion matrix
         cm_norm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
@@ -184,12 +187,11 @@ class Reports:
 
         text_labels = ['A_long', 'B_long', 'A_short', 'B_short']
 
-        for p in range(0, len(cm)):
+        fig, axs = plt.subplots(2, 2, figsize=figsize)
+        for n, m, p in [[0, 0, 0], [0, 1, 1], [1, 0, 2], [1, 1, 3]]:
+
             # Make axes and colored boxes
-            fig = plt.figure(figsize=figsize)
-            ax = plt.subplot()
-            cax = ax.matshow(cm[0], cmap=plt.cm.Blues)
-            fig.colorbar(cax)
+            cax = axs[n, m].matshow(cm[p], cmap=plt.cm.Blues)
 
             # Create classes
             classes = False
@@ -199,41 +201,49 @@ class Reports:
             else:
                 labels = np.arange(n_classes)
 
-            ax.set(title=f"Confusion Matrix {text_labels[p]}",
-                   xlabel='Predicted Label',
-                   ylabel='True Label',
-                   xticks=np.arange(n_classes),
-                   yticks=np.arange(n_classes),
-                   xticklabels=labels,
-                   yticklabels=labels)
+            axs[n, m].set(title=f"{text_labels[p]}",
+                          xlabel='Predicted Label',
+                          ylabel='True Label',
+                          xticks=np.arange(n_classes),
+                          yticks=np.arange(n_classes),
+                          xticklabels=labels,
+                          yticklabels=labels)
 
             # Set x-axis labels to bottom
-            ax.xaxis.set_label_position("bottom")
-            ax.xaxis.tick_bottom()
+            axs[n, m].xaxis.set_label_position("bottom")
+            axs[n, m].xaxis.tick_bottom()
 
             # Adjust label size
-            ax.yaxis.label.set_size(20)
-            ax.xaxis.label.set_size(20)
-            ax.title.set_size(20)
+            axs[n, m].yaxis.label.set_size(fontsize)
+            axs[n, m].xaxis.label.set_size(fontsize)
+            axs[n, m].title.set_size(fontsize)
 
             # Set threshold for different colors
             threshold = (cm.max() + cm.min()) / 2.
 
             # Plot the text on each cell
             for i, j in itertools.product(range(cm[p].shape[0]), range(cm[p].shape[1])):
-                plt.text(j, i, f"{cm[p][i, j]} ({cm_norm[p][i, j] * 100:.1f}%)",
-                         horizontalalignment="center",
-                         color="white" if cm[p][i, j] > threshold else "black",
-                         size=15)
+                axs[n, m].text(j, i, f"{cm[p][i, j]} ({cm_norm[p][i, j] * 100:.1f}%)",
+                               horizontalalignment="center",
+                               color="white" if cm[p][i, j] > threshold else "black",
+                               size=fontsize)
+
+        fig.suptitle('Confusion matrix', fontsize=fontsize + 10)
+        fig.colorbar(cax, ax=axs)
         plt.show()
 
     @staticmethod
     def plot_loss(history):
         epochs_plt = [i for i in range(1, len(history.history['loss']) + 1)]
+        acc = history.history['accuracy']
+        val_acc = history.history['val_accuracy']
         loss = history.history['loss']
         val_loss = history.history['val_loss']
 
-        plt.figure(figsize=(10, 7))
-        plt.plot(epochs_plt, [loss, val_loss])
+        plt.figure(figsize=(15, 10))
+        plt.plot(epochs_plt, loss, label='loss')
+        plt.plot(epochs_plt, val_loss, label='val_loss')
+        plt.plot(epochs_plt, acc, label='accuracy')
+        plt.plot(epochs_plt, val_acc, label='val_accuracy')
         plt.ylabel('loss')
         plt.xlabel('epochs')

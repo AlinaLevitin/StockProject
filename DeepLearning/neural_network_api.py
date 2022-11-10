@@ -145,11 +145,12 @@ def open_data_and_train(cwd, from_save=True):
     acc_and_loss = result[1]
     report = DeepLearning.Reports(cwd, training_data, model)
     report.single_train_report(accuracy, acc_and_loss)
-    report.confusion_matrix()
+    report.confusion_matrix(training_data.x_test, training_data.y_test)
+    report.plot_loss(result)
     model.save_model('trained_neural_network')
 
 
-def test_accuracy(cwd, copy=False):
+def test_accuracy(cwd, copy=False, use_training_data=False):
     os.chdir(cwd)
     config_dict = DeepLearning.utils.read_config(cwd)
     steps_back = int(config_dict['STEPS_BACK'])
@@ -165,33 +166,36 @@ def test_accuracy(cwd, copy=False):
 
     data = DeepLearning.TrainingData(cwd)
 
-    try:
-        data.open_all_data('test_accuracy_data')
-    except (Exception,):
-        print('=' * 60)
-        print('No data to load, now collecting data')
-        print('=' * 60)
-        data.read_all_data(steps_back, steps_forward,
-                           percent_long, percent_short, interval, start_date, end_date)
-        data.save_all_data('test_accuracy_data')
-
-    data.set_x_and_y()
+    if use_training_data:
+        data.open_all_data('train_data')
+    else:
+        try:
+            data.open_all_data('test_accuracy_data')
+        except (Exception,):
+            print('=' * 60)
+            print('No data to load, now collecting data')
+            print('=' * 60)
+            data.read_all_data(steps_back, steps_forward,
+                               percent_long, percent_short, interval, start_date, end_date)
+            data.save_all_data('test_accuracy_data')
 
     model = DeepLearning.Model(cwd)
     print('=' * 60)
     model.load_model('trained_neural_network')
     print('=' * 60)
 
+    data.set_x_and_y()
+
     try:
         accuracy = model.test_model(data)
     except (Exception,):
         raise FileExistsError('Unable to start testing,'
-                              'there are no data to test try different start_date or end_date')
+                              'there are no data to test, try different start_date or end_date')
     gmt = time.gmtime()
     time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
     test_accuracy_data_file = f'test_accuracy_data_{time_stamp}'
     report = DeepLearning.Reports(cwd, data, model)
-    report.confusion_matrix()
+    report.confusion_matrix(data.x, data.y)
     summary = report.single_train_summary(accuracy)
     DeepLearning.utils.save_to_csv(test_accuracy_data_file, summary, cwd + '\\reports')
 
