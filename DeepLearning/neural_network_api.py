@@ -184,7 +184,7 @@ def test_accuracy(cwd, copy=False, use_training_data=False):
     model.load_model('trained_neural_network')
     print('=' * 60)
 
-    data.set_x_and_y()
+    data.scale_and_set_x_and_y()
 
     try:
         accuracy = model.test_model(data)

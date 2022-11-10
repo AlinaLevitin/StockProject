@@ -136,7 +136,7 @@ class Model:
                            metrics=['accuracy'])
         return self.model
 
-    def train_and_test(self, data, save: bool = True, verbose: int =1):
+    def train_and_test(self, data, save: bool = True, verbose: int = 1):
         """
         train and test the model
 
@@ -230,9 +230,8 @@ class Model:
         :param data: pandas dataframe
         :return:
         """
-        self.data = data
         print('Testing accuracy of neural network')
-        result = self.model.evaluate(self.data.x, self.data.y)
+        result = self.model.evaluate(data.x, data.y)
         accuracy = result[1]
         return accuracy
 
