@@ -240,10 +240,11 @@ class Reports:
         loss = history.history['loss']
         val_loss = history.history['val_loss']
 
-        plt.figure(figsize=(15, 10))
+        plt.figure(figsize=(10, 10))
         plt.plot(epochs_plt, loss, label='loss')
         plt.plot(epochs_plt, val_loss, label='val_loss')
         plt.plot(epochs_plt, acc, label='accuracy')
         plt.plot(epochs_plt, val_acc, label='val_accuracy')
-        plt.ylabel('loss')
-        plt.xlabel('epochs')
+        plt.title('accuracy and loss vs epoch', fontsize=20)
+        plt.ylabel('a.u / accuracy', fontsize=15)
+        plt.xlabel('epochs', fontsize=15)

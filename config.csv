@@ -10,5 +10,5 @@ TEST_DATA,0.2,Portion for test data
 VALIDATION_DATA,0.2,Portion for validation data
 NEURONS,1000,Number of neurons for neural network architecture
 BATCH_SIZE,512,Batch size for stochastic gradient descent training
-EPOCHS,100,Number of epochs for stochastic gradient descent training
+EPOCHS,1,Number of epochs for stochastic gradient descent training
 LEARNING_RATE,0.0001,Learning rate for stochastic gradient descent training
