@@ -146,7 +146,7 @@ def open_data_and_train(cwd, from_save=True):
     print('Training is commencing!')
     print('=' * 60)
     try:
-        result= model.train_and_test(training_data)
+        result = model.train_and_test(training_data)
     except (Exception,):
         raise FileExistsError('Unable to start training,'
                               'please delete previous callback or trained_neural_network.h5 and retry')
