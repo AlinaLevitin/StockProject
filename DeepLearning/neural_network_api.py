@@ -146,17 +146,17 @@ def open_data_and_train(cwd, from_save=True):
     print('Training is commencing!')
     print('=' * 60)
     try:
-        result = model.train_and_test(training_data)
+        result= model.train_and_test(training_data)
     except (Exception,):
         raise FileExistsError('Unable to start training,'
                               'please delete previous callback or trained_neural_network.h5 and retry')
 
     accuracy = result[0]
-    acc_and_loss = result[1]
+    history = result[1]
     report = DeepLearning.Reports(path, training_data, model)
-    report.single_train_report(accuracy, acc_and_loss)
+    report.single_train_report(accuracy, history)
     report.confusion_matrix(training_data.x_test, training_data.y_test)
-    # report.plot_loss(result)
+    report.plot_loss(history)
     model.save_model('trained_neural_network')
 
 

@@ -7,7 +7,6 @@ import os
 
 import keras
 import tensorflow as tf
-import pandas as pd
 
 
 class Model:
@@ -149,7 +148,6 @@ class Model:
 
         :return: accuracy of testing data, and history pandas dataframe
         """
-        # tf.test_is_gpu_available()
 
         self.data = data
 
@@ -166,19 +164,12 @@ class Model:
                                  batch_size=self.batch_size, callbacks=callbacks,
                                  verbose=verbose
                                  )
-        epochs = [i for i in range(1, self.epochs + 1)]
-        acc = history.history['accuracy']
-        val_acc = history.history['val_accuracy']
-        loss = history.history['loss']
-        val_loss = history.history['val_loss']
-
-        acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy': val_acc,
-                        'validation_loss': val_loss}
-        acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
-
+        print('='*60)
+        print('Testing model with test data')
         result = self.model.evaluate(self.data.x_test, self.data.y_test)
+        print('=' * 60)
         accuracy = result[1]
-        return accuracy, acc_and_loss_df
+        return accuracy, history
 
     def load_callback(self):
         """
@@ -197,7 +188,7 @@ class Model:
         os.makedirs(self.cwd + '\\trained_model', exist_ok=True)
         os.chdir(self.cwd + '\\trained_model')
         self.model.save(name + '.h5')
-        print(f'model was saved at {self.cwd} + \\trained_model{name}.h5')
+        print(f'model was saved at {self.cwd}\\trained_model{name}.h5')
 
     def load_model(self, name: str):
         """

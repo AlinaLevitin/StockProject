@@ -115,12 +115,12 @@ class Reports:
             print('+' * 60)
         return summary
 
-    def single_train_report(self, accuracy, acc_and_loss):
+    def single_train_report(self, test_accuracy, history):
         """
         Generates an Excel file after training a model
 
-        :param accuracy: float returned from train_and_test, first item in the tuple
-        :param acc_and_loss: pandas DataFrame returned from train_and_test, second item in the tuple
+        :param test_accuracy: accuracy of test
+        :param history: TensorFlow history object as a result of model.fit()
         """
         gmt = time.gmtime()
         time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
@@ -128,21 +128,43 @@ class Reports:
         os.chdir(self.cwd)
         os.makedirs(path, exist_ok=True)
         os.chdir(path)
-        summary = self.single_train_summary(accuracy)
+
+        epochs = [i for i in range(1, len(history.history['accuracy']) + 1)]
+        acc = history.history['accuracy']
+        val_acc = history.history['val_accuracy']
+        loss = history.history['loss']
+        val_loss = history.history['val_loss']
+
+        acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy': val_acc,
+                        'validation_loss': val_loss}
+        acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
+
+        summary = self.single_train_summary(test_accuracy)
         file = f'summary_{time_stamp}'
         with pd.ExcelWriter(f'{file}.xlsx') as writer:
             summary.to_excel(writer, sheet_name=f'summary')
-            acc_and_loss.to_excel(writer, sheet_name=f'acc_and_loss')
+            acc_and_loss_df.to_excel(writer, sheet_name=f'acc_and_loss')
         print(f'report saved to {file}.xlsx in {path} folder')
 
-    def repeat_train_report(self, i, accuracy, acc_and_loss):
+    def repeat_train_report(self, i, accuracy, history):
         """
         Generates an Excel file after training a model in a repeat train
 
         :param i: repeat number
         :param accuracy: float returned from train_and_test, first item in the tuple
-        :param acc_and_loss: pandas DataFrame returned from train_and_test, second item in the tuple
+        :param history: TensorFlow history object as a result of model.fit()
         """
+
+        epochs = [i for i in range(1, len(history.history['accuracy']) + 1)]
+        acc = history.history['accuracy']
+        val_acc = history.history['val_accuracy']
+        loss = history.history['loss']
+        val_loss = history.history['val_loss']
+
+        acc_and_loss = {'epoch': epochs, 'accuracy': acc, 'loss': loss, 'validation_accuracy': val_acc,
+                        'validation_loss': val_loss}
+        acc_and_loss_df = pd.DataFrame.from_dict(acc_and_loss)
+
         neurons = self.model.neurons
         gmt = time.gmtime()
         time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
@@ -154,7 +176,7 @@ class Reports:
         file = f'summary_{i + 1}_repeats_{neurons}_neurons_{time_stamp}'
         with pd.ExcelWriter(f'{file}.xlsx', engine='xlsxwriter') as writer:
             summary.to_excel(writer, sheet_name=f'summary')
-            acc_and_loss.to_excel(writer, sheet_name=f'acc_and_loss')
+            acc_and_loss_df.to_excel(writer, sheet_name=f'acc_and_loss')
         print(f'report saved at {path}\\{file}.xlsx')
 
     def confusion_matrix(self, x, y):
@@ -171,8 +193,6 @@ class Reports:
         print('Preparing confusion matrix')
         print('=' * 60)
         y_pred = self.model.model.predict(x)
-
-        text_labels = ['A_long', 'B_long', 'A_short', 'B_short']
 
         # make confusion matrix
         cm = multilabel_confusion_matrix(y, y_pred.round(0))
@@ -252,9 +272,10 @@ class Reports:
         plt.title('accuracy and loss vs epoch', fontsize=20)
         plt.ylabel('a.u / accuracy', fontsize=15)
         plt.xlabel('epochs', fontsize=15)
-        plt.show()
+        plt.legend()
 
         gmt = time.gmtime()
         time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
         os.chdir(self.cwd)
         plt.savefig(f'accuracy_and_loss_vs_epoch_{time_stamp}.png')
+        print(f'accuracy and loss plot was saved at {self.cwd}\\accuracy_and_loss_vs_epoch_{time_stamp}.png')
