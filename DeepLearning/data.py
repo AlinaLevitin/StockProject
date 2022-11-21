@@ -200,10 +200,11 @@ class Data:
         print(self)
         print(f'Saved parameters as params_{name}.json')
 
-    def open_all_data(self, name: str = 'data'):
+    def open_all_data(self, path, name: str = 'data'):
         """
         opens the data from csv file and the parameters from json file
 
+        :param path: where to open the data from
         :param name: name of file, default is data
         :type name: str optional
 
@@ -212,7 +213,7 @@ class Data:
         """
         print("-" * 60)
         print("Loading data")
-        os.chdir(self.cwd)
+        os.chdir(path)
         self.data = pd.read_csv(f'{name}.csv')
         with open(f'params_{name}.json') as json_file:
             params = json.load(json_file)

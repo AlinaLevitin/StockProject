@@ -155,7 +155,7 @@ class Reports:
         with pd.ExcelWriter(f'{file}.xlsx', engine='xlsxwriter') as writer:
             summary.to_excel(writer, sheet_name=f'summary')
             acc_and_loss.to_excel(writer, sheet_name=f'acc_and_loss')
-        print(f'report saved to {file}.xlsx in {path} folder')
+        print(f'report saved at {path}\\{file}.xlsx')
 
     def confusion_matrix(self, x, y):
         """
@@ -230,10 +230,14 @@ class Reports:
 
         fig.suptitle('Confusion matrix', fontsize=fontsize + 10)
         fig.colorbar(cax, ax=axs)
-        plt.show()
 
-    @staticmethod
-    def plot_loss(history):
+        gmt = time.gmtime()
+        time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
+        os.chdir(self.cwd)
+        plt.savefig(f'confusion_matrix_{time_stamp}.png', format='png')
+        print(f'confusion_matrix was saved at {self.cwd}\\confusion_matrix_{time_stamp}.png')
+
+    def plot_loss(self, history):
         epochs_plt = [i for i in range(1, len(history.history['loss']) + 1)]
         acc = history.history['accuracy']
         val_acc = history.history['val_accuracy']
@@ -248,3 +252,9 @@ class Reports:
         plt.title('accuracy and loss vs epoch', fontsize=20)
         plt.ylabel('a.u / accuracy', fontsize=15)
         plt.xlabel('epochs', fontsize=15)
+        plt.show()
+
+        gmt = time.gmtime()
+        time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
+        os.chdir(self.cwd)
+        plt.savefig(f'accuracy_and_loss_vs_epoch_{time_stamp}.png')

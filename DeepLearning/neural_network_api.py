@@ -104,11 +104,17 @@ def open_data_and_train(cwd, from_save=True):
     test_data_portion = float(config_dict['TEST_DATA'])
     val_data_portion = float(config_dict['VALIDATION_DATA'])
 
+    start_date = int(config_dict['START_DATE'])
+    end_date = int(config_dict['END_DATE'])
+
+    path = f"{cwd}\\{start_date}-{end_date}"
+    os.makedirs(path, exist_ok=True)
+
     training_data = DeepLearning.TrainingData(cwd)
-    training_data.open_all_data('train_data')
+    training_data.open_all_data(path=path, name='train_data')
     training_data.split_data(test_data_portion, val_data_portion)
 
-    model = DeepLearning.Model(cwd)
+    model = DeepLearning.Model(path)
     neurons = int(config_dict['NEURONS'])
     epochs = int(config_dict['EPOCHS'])
     learning_rate = float(config_dict['LEARNING_RATE'])
@@ -147,10 +153,10 @@ def open_data_and_train(cwd, from_save=True):
 
     accuracy = result[0]
     acc_and_loss = result[1]
-    report = DeepLearning.Reports(cwd, training_data, model)
+    report = DeepLearning.Reports(path, training_data, model)
     report.single_train_report(accuracy, acc_and_loss)
     report.confusion_matrix(training_data.x_test, training_data.y_test)
-    report.plot_loss(result)
+    # report.plot_loss(result)
     model.save_model('trained_neural_network')
 
 

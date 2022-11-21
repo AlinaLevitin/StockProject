@@ -197,7 +197,7 @@ class Model:
         os.makedirs(self.cwd + '\\trained_model', exist_ok=True)
         os.chdir(self.cwd + '\\trained_model')
         self.model.save(name + '.h5')
-        print(f'model was saved to file: {name}.h5')
+        print(f'model was saved at {self.cwd} + \\trained_model{name}.h5')
 
     def load_model(self, name: str):
         """
