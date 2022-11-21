@@ -21,6 +21,7 @@ def read_data_for_training(cwd, copy=False):
     to all_hist folder
     """
     os.chdir(cwd)
+
     config_dict = DeepLearning.utils.read_config(cwd)
     steps_back = int(config_dict['STEPS_BACK'])
     steps_forward = int(config_dict['STEPS_FORWARD'])
@@ -30,12 +31,15 @@ def read_data_for_training(cwd, copy=False):
     start_date = int(config_dict['START_DATE'])
     end_date = int(config_dict['END_DATE'])
 
+    path = f"{cwd}\\{start_date}-{end_date}"
+    os.makedirs(path, exist_ok=True)
+
     if copy:
         DeepLearning.utils.copy_to_one_dir(cwd)
     data = DeepLearning.TrainingData(cwd)
     data.read_all_data(steps_back, steps_forward,
                        percent_long, percent_short, interval, start_date, end_date)
-    data.save_all_data('train_data')
+    data.save_all_data(path=path, name='train_data')
 
 
 def model_opt(cwd):

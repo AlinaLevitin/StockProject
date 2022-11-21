@@ -177,10 +177,11 @@ class Data:
             print(f"analyzed {file}")
             return data
 
-    def save_all_data(self, name: str = 'data'):
+    def save_all_data(self, path: str, name: str = 'data'):
         """
         saves the data to a csv file and the parameters to a json file
 
+        :param path: path to save the data
         :param name: name of file, default is data
         :type name: str optional
 
@@ -188,7 +189,7 @@ class Data:
         saves a csv file with the data and a json file with the parameters
         """
 
-        DeepLearning.utils.save_to_csv(name, self.data, self.cwd)
+        DeepLearning.utils.save_to_csv(name, self.data, path=path)
         params = {'data_num': self.data_num, 'steps_back': self.steps_back, 'steps_forward': self.steps_forward,
                   'percent_long': self.percent_long,
                   'percent_short': self.percent_short, 'interval': self.interval,

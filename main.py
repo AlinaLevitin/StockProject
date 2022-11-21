@@ -7,7 +7,7 @@ import DeepLearning
 
 CWD = os.getcwd()
 
-# DeepLearning.neural_network_api.read_data_for_training(CWD, copy=False)
+DeepLearning.neural_network_api.read_data_for_training(CWD, copy=False)
 """
 Use this method when reading the analysis_hist, copy=True will copy all csv files to one folder
 for more efficient data reading (do this once then change to copy=False)
@@ -28,7 +28,7 @@ Use this to train the neural network either from a callback or saved trained neu
   callbacks and trained_neural_network.h5).
 """
 
-DeepLearning.neural_network_api.test_accuracy(CWD, use_training_data=True)
+# DeepLearning.neural_network_api.test_accuracy(CWD, use_training_data=True)
 """
 Use this to test the accuracy of a trained model.
 In the config choose the dates you want to test (I suggest no more than two months since it takes 
