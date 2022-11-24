@@ -151,17 +151,28 @@ def open_data_and_train(cwd, from_save=True):
         raise FileExistsError('Unable to start training,'
                               'please delete previous callback or trained_neural_network.h5 and retry')
 
+    gmt = time.gmtime()
+    time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
+
     accuracy = result[0]
     history = result[1]
-    report = DeepLearning.Reports(path, training_data, model)
+    report = DeepLearning.Reports(path + '\\reports', training_data, model)
     report.single_train_report(accuracy, history)
-    report.confusion_matrix(training_data.x_test, training_data.y_test)
+    report.confusion_matrix(training_data.x_test, training_data.y_test, name=f'train_confusion_matrix_{time_stamp}')
     report.plot_loss(history)
     model.save_model('trained_neural_network')
 
 
 def test_accuracy(cwd, copy=False, use_training_data=False):
+    """
+
+    :param cwd:
+    :param copy:
+    :param use_training_data:
+    :return:
+    """
     os.chdir(cwd)
+
     config_dict = DeepLearning.utils.read_config(cwd)
     steps_back = int(config_dict['STEPS_BACK'])
     steps_forward = int(config_dict['STEPS_FORWARD'])
@@ -171,25 +182,31 @@ def test_accuracy(cwd, copy=False, use_training_data=False):
     start_date = int(config_dict['START_DATE'])
     end_date = int(config_dict['END_DATE'])
 
+    acc_test_start_date = int(config_dict['ACC_TEST_START_DATE'])
+    acc_test_end_date = int(config_dict['ACC_TEST_END_DATE'])
+
+    path = f"{cwd}\\{start_date}-{end_date}"
+    os.makedirs(path, exist_ok=True)
+
     if copy:
         DeepLearning.utils.copy_to_one_dir(cwd)
 
     data = DeepLearning.TrainingData(cwd)
 
     if use_training_data:
-        data.open_all_data('train_data')
+        data.open_all_data(path=path, name='train_data')
     else:
         try:
-            data.open_all_data('test_accuracy_data')
+            data.open_all_data(path=path, name=f'test_accuracy_data_{acc_test_start_date}-{acc_test_end_date}')
         except (Exception,):
             print('=' * 60)
             print('No data to load, now collecting data')
             print('=' * 60)
             data.read_all_data(steps_back, steps_forward,
-                               percent_long, percent_short, interval, start_date, end_date)
-            data.save_all_data('test_accuracy_data')
+                               percent_long, percent_short, interval, acc_test_start_date, acc_test_end_date)
+            data.save_all_data(path=path, name=f'test_accuracy_data_{acc_test_start_date}-{acc_test_end_date}')
 
-    model = DeepLearning.Model(cwd)
+    model = DeepLearning.Model(path)
     print('=' * 60)
     model.load_model('trained_neural_network')
     print('=' * 60)
@@ -203,11 +220,12 @@ def test_accuracy(cwd, copy=False, use_training_data=False):
                               'there are no data to test, try different start_date or end_date')
     gmt = time.gmtime()
     time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-    test_accuracy_data_file = f'test_accuracy_data_{time_stamp}'
-    report = DeepLearning.Reports(cwd, data, model)
-    report.confusion_matrix(data.x, data.y)
+    test_accuracy_data_file = f'test_accuracy_data_{acc_test_start_date}-{acc_test_end_date}_{time_stamp}'
+    report = DeepLearning.Reports(path + '\\reports', data, model)
+    report.confusion_matrix(data.x, data.y,
+                            name=f'test_accuracy_confusion_matrix_{acc_test_start_date}-{acc_test_end_date}_{time_stamp}')
     summary = report.single_train_summary(accuracy)
-    DeepLearning.utils.save_to_csv(test_accuracy_data_file, summary, cwd + '\\reports')
+    DeepLearning.utils.save_to_csv(test_accuracy_data_file, summary, path + '\\reports')
 
 
 def predict_results(cwd):

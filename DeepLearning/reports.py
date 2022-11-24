@@ -179,7 +179,7 @@ class Reports:
             acc_and_loss_df.to_excel(writer, sheet_name=f'acc_and_loss')
         print(f'report saved at {path}\\{file}.xlsx')
 
-    def confusion_matrix(self, x, y):
+    def confusion_matrix(self, x, y, name='confusion_matrix'):
         """
         confusion matrix function
 
@@ -251,11 +251,9 @@ class Reports:
         fig.suptitle('Confusion matrix', fontsize=fontsize + 10)
         fig.colorbar(cax, ax=axs)
 
-        gmt = time.gmtime()
-        time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
         os.chdir(self.cwd)
-        plt.savefig(f'confusion_matrix_{time_stamp}.png', format='png')
-        print(f'confusion_matrix was saved at {self.cwd}\\confusion_matrix_{time_stamp}.png')
+        plt.savefig(f'{name}.png', format='png')
+        print(f'confusion_matrix was saved at {self.cwd}\\{name}.png')
 
     def plot_loss(self, history):
         epochs_plt = [i for i in range(1, len(history.history['loss']) + 1)]
