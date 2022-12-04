@@ -124,10 +124,8 @@ class Reports:
         """
         gmt = time.gmtime()
         time_stamp = f'{gmt[0]}_{gmt[1]}_{gmt[2]}_{gmt[3]}_{gmt[4]}'
-        path = self.cwd + f"\\reports"
+        os.makedirs(self.cwd, exist_ok=True)
         os.chdir(self.cwd)
-        os.makedirs(path, exist_ok=True)
-        os.chdir(path)
 
         epochs = [i for i in range(1, len(history.history['accuracy']) + 1)]
         acc = history.history['accuracy']
@@ -144,7 +142,7 @@ class Reports:
         with pd.ExcelWriter(f'{file}.xlsx') as writer:
             summary.to_excel(writer, sheet_name=f'summary')
             acc_and_loss_df.to_excel(writer, sheet_name=f'acc_and_loss')
-        print(f'report saved to {file}.xlsx in {path} folder')
+        print(f'report saved at {self.cwd}\\{file}.xlsx')
 
     def repeat_train_report(self, i, accuracy, history):
         """
