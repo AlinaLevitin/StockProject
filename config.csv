@@ -1,6 +1,6 @@
 Parameter,Value,Comments
-START_DATE,20220501,Starting date for training period
-END_DATE,20220505,Ending date for training period
+START_DATE,20211101,Starting date for training period
+END_DATE,20211231,Ending date for training period
 STEPS_BACK,10,Timepoints before taking position for training
 STEPS_FORWARD,10,Timepoints after taking position as the outcome for training
 PERCENT_LONG,0.5,Percent for Long position profit/or loss
@@ -10,7 +10,7 @@ TEST_DATA,0.2,Portion for test data
 VALIDATION_DATA,0.2,Portion for validation data
 NEURONS,1000,Number of neurons for neural network architecture
 BATCH_SIZE,512,Batch size for stochastic gradient descent training
-EPOCHS,5,Number of epochs for stochastic gradient descent training
+EPOCHS,100,Number of epochs for stochastic gradient descent training
 LEARNING_RATE,0.0001,Learning rate for stochastic gradient descent training
 ACC_TEST_START_DATE,20220506,Starting date for testing the accuracy
 ACC_TEST_END_DATE,20220510,Ending date for testing the accuracy
