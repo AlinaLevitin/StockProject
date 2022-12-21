@@ -139,40 +139,40 @@ class Data:
         one_percent = float(file.split('_')[-1].replace('.csv', ''))
         date = int(file.split('_')[2])
         if int(self.start_date) < date < int(self.end_date):
-            data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'])
-
-            working_hours = data_raw[data_raw['time'].dt.hour.between(9, 14)]
-            shrink_dataframe = int(working_hours.shape[0] - self.steps_forward)
+            data_raw = pd.read_csv(file, header=None, names=['time', 'A', 'B'], parse_dates=['time'])
+            shrink_dataframe = int(data_raw.shape[0] - self.steps_forward)
 
             # Finding the result for each time point
             for index in range(self.steps_back, shrink_dataframe, self.interval):
-                future = working_hours.iloc[index:index + self.steps_forward, :].copy()
+                hour = data_raw['time'].loc[index].hour
+                if 10 < hour < 14:
+                    future = data_raw.iloc[index:index + self.steps_forward, :].copy()
 
-                A_future_long_profit = self.long_profit(future, 'A', one_percent)
-                B_future_long_profit = self.long_profit(future, 'B', one_percent)
-                A_future_short_profit = self.short_profit(future, 'A', one_percent)
-                B_future_short_profit = self.short_profit(future, 'B', one_percent)
+                    A_future_long_profit = self.long_profit(future, 'A', one_percent)
+                    B_future_long_profit = self.long_profit(future, 'B', one_percent)
+                    A_future_short_profit = self.short_profit(future, 'A', one_percent)
+                    B_future_short_profit = self.short_profit(future, 'B', one_percent)
 
-                A_past = working_hours.iloc[index - self.steps_back:index, 1].to_frame()
-                B_past = working_hours.iloc[index - self.steps_back:index, 2].to_frame()
-                df_A = A_past.T
-                df_B = B_past.T
-                A_len = df_A.shape[1]
-                B_len = df_B.shape[1]
-                columns_A = [f"A_x({x})" for x in range(A_len)]
-                columns_B = [f"B_x({x})" for x in range(B_len)]
-                df_A.columns = columns_A
-                df_B.columns = columns_B
-                df_B.reset_index(inplace=True)
-                df_A.reset_index(inplace=True)
-                time_point = pd.concat([df_A, df_B], axis=1, join='outer')
-                time_point.drop(labels='index', axis=1, inplace=True)
-                time_point['A_long_(y)'] = A_future_long_profit
-                time_point['B_long_(y)'] = B_future_long_profit
-                time_point['A_short_(y)'] = A_future_short_profit
-                time_point['B_short_(y)'] = B_future_short_profit
-                data.index.name = 'index'
-                data = pd.concat([data, time_point])
+                    A_past = data_raw.iloc[index - self.steps_back:index, 1].to_frame()
+                    B_past = data_raw.iloc[index - self.steps_back:index, 2].to_frame()
+                    df_A = A_past.T
+                    df_B = B_past.T
+                    A_len = df_A.shape[1]
+                    B_len = df_B.shape[1]
+                    columns_A = [f"A_x({x})" for x in range(A_len)]
+                    columns_B = [f"B_x({x})" for x in range(B_len)]
+                    df_A.columns = columns_A
+                    df_B.columns = columns_B
+                    df_B.reset_index(inplace=True)
+                    df_A.reset_index(inplace=True)
+                    time_point = pd.concat([df_A, df_B], axis=1, join='outer')
+                    time_point.drop(labels='index', axis=1, inplace=True)
+                    time_point['A_long_(y)'] = A_future_long_profit
+                    time_point['B_long_(y)'] = B_future_long_profit
+                    time_point['A_short_(y)'] = A_future_short_profit
+                    time_point['B_short_(y)'] = B_future_short_profit
+                    data.index.name = 'index'
+                    data = pd.concat([data, time_point])
             print(f"analyzed {file}")
             return data
 
